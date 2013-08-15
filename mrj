@@ -1,0 +1,2 @@
+#!/bin/sh
+(grep "^:$1;" latindb || echo "[[13,37,'$1']]") | head -n 1 | ruby wgetretrofit.r | awk -f nufec.awk |awk -f premux.awk |awk -f numux.awk |awk -f v2c.awk > ./$1.lemma
