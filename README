@@ -1,1 +1,4 @@
 Flights of fancy in my younger and more vulnerable days: a few hundred lines of text-to-phoneme synthesis via a hundred lines of regexp substitutions.
+
+Modifications since my bachelor's thesis:
+* Scansion of any meter (master's work)
