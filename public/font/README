@@ -1,0 +1,12 @@
+This is Polutoniko LCD, a browser-based bitmap font for Ancient Greek.
+It has been tested, and works, under Firefox 1.5 and IE 6.
+
+The glyphs are copied from Verdana.  A Haskell 6.4 script converts the individual letters and accents into a full set of glyphs, and writes Javascript code to hint them.
+The glyphs are GIFs, which Javascript strings together.
+
+When writing a web page, instead of using a Unicode editor, it's possible to just write in beta code, enclosing all Greek within <ptlcd></ptlcd> tags.
+Please see the proofsheet, also online at http://www.poetaexmachina.net/font/proofsheet/ , for details.
+
+This is an archive of Polutoniko LCD as it appeared on Tuesday 29 May 2007.  All code is released under GPL version 2.
+
+Lee Butterman

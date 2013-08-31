@@ -1,0 +1,493 @@
+<html>
+<title>kalliston!</title>
+<script type="text/javascript" src="p.js"></script>
+<script>
+
+function rendre() {
+  Element.update($('t'),"aligning glyphs...");
+  Element.update($('nil'),"generating unicode...");
+  setTimeout("mkfont();",1);
+  setTimeout("mkuni();",1);
+}
+
+function mkfont() {
+  var newt = $F('betacode').toLowerCase().polysub(
+        [/([*][()/\=]*[a-z])/g,'$12'],
+        [/[(]/g,'9'],[/[)]/g,'0'],[/[+]/g,'3'],
+        [/\//g,'5'],[/\\/g,'7'],[/=/g,'6'],
+        [/2[|]/g,'2i'],
+        [/[*]/g,'j'],
+        [/[|]/g,'1'],[/s(?![a-z1])/g,'s1'],
+        [/"/g,"''"],[/`/g,"'"],
+        [/([a-z][0-9]*|[.,'?:])/g,"_$1_"],
+
+[/(')_(?=_[,'])/g,'$1'],
+[/_a2/g,'a2'],
+[/a2_/g,'a2'],
+[/g2_/g,'g2'],
+[/_g/g,'g'],
+[/g_/g,'g'],
+[/z_/g,'z'],
+[/_i2/g,'i2'],
+[/i2_/g,'i2'],
+[/k2_/g,'k2'],
+[/_l2/g,'l2'],
+[/l2_/g,'l2'],
+[/_l/g,'l'],
+[/l_/g,'l'],
+[/_c2/g,'c2'],
+[/c2_/g,'c2'],
+[/c_/g,'c'],
+[/s2_/g,'s2'],
+[/s_/g,'s'],
+[/_t2/g,'t2'],
+[/t2_/g,'t2'],
+[/_t/g,'t'],
+[/t_/g,'t'],
+[/_u2/g,'u2'],
+[/u2_/g,'u2'],
+[/y2_/g,'y2'],
+[/_e961/g,'e961'],
+[/_e96/g,'e96'],
+[/e91_/g,'e91'],
+[/e9_/g,'e9'],
+[/_e061/g,'e061'],
+[/_e06/g,'e06'],
+[/e01_/g,'e01'],
+[/e0_/g,'e0'],
+[/e71_/g,'e71'],
+[/e7_/g,'e7'],
+[/_i951/g,'~i951'],
+[/i951_/g,'i951~'],
+[/_i95/g,'~i95'],
+[/i95_/g,'i95~'],
+[/_i961/g,'~i961'],
+[/i961_/g,'i961~'],
+[/_i96/g,'~i96'],
+[/i96_/g,'i96~'],
+[/_i971/g,'~i971'],
+[/i971_/g,'i971~'],
+[/_i97/g,'~i97'],
+[/i97_/g,'i97~'],
+[/_i91/g,'i91'],
+[/_i9/g,'i9'],
+[/_i051/g,'~i051'],
+[/i051_/g,'i051~'],
+[/_i05/g,'~i05'],
+[/i05_/g,'i05~'],
+[/_i061/g,'~i061'],
+[/i061_/g,'i061~'],
+[/_i06/g,'~i06'],
+[/i06_/g,'i06~'],
+[/_i071/g,'~i071'],
+[/i071_/g,'i071~'],
+[/_i07/g,'~i07'],
+[/i07_/g,'i07~'],
+[/_i01/g,'i01'],
+[/i01_/g,'i01'],
+[/_i0/g,'i0'],
+[/i0_/g,'i0'],
+[/_i351/g,'i351'],
+[/i351_/g,'i351'],
+[/_i35/g,'i35'],
+[/i35_/g,'i35'],
+[/_i361/g,'i361'],
+[/i361_/g,'i361'],
+[/_i36/g,'i36'],
+[/i36_/g,'i36'],
+[/_i371/g,'i371'],
+[/i371_/g,'i371'],
+[/_i37/g,'i37'],
+[/i37_/g,'i37'],
+[/_i31/g,'i31'],
+[/i31_/g,'i31'],
+[/_i3/g,'i3'],
+[/i3_/g,'i3'],
+[/_i51/g,'i51'],
+[/i51_/g,'i51'],
+[/_i5/g,'i5'],
+[/i5_/g,'i5'],
+[/_i61/g,'i61'],
+[/i61_/g,'i61'],
+[/_i6/g,'i6'],
+[/i6_/g,'i6'],
+[/_i71/g,'i71'],
+[/_i7/g,'i7'],
+[/_j951/g,'~j951'],
+[/j951_/g,'j951~'],
+[/_j95/g,'~j95'],
+[/j95_/g,'j95~'],
+[/_j961/g,'~j961'],
+[/j961_/g,'j961~'],
+[/_j96/g,'~j96'],
+[/j96_/g,'j96~'],
+[/_j971/g,'~j971'],
+[/j971_/g,'j971~'],
+[/_j97/g,'~j97'],
+[/j97_/g,'j97~'],
+[/_j91/g,'j91'],
+[/j91_/g,'j91'],
+[/_j9/g,'j9'],
+[/j9_/g,'j9'],
+[/_j051/g,'~j051'],
+[/j051_/g,'j051~'],
+[/_j05/g,'~j05'],
+[/j05_/g,'j05~'],
+[/_j061/g,'~j061'],
+[/j061_/g,'j061~'],
+[/_j06/g,'~j06'],
+[/j06_/g,'j06~'],
+[/_j071/g,'~j071'],
+[/j071_/g,'j071~'],
+[/_j07/g,'~j07'],
+[/j07_/g,'j07~'],
+[/_j01/g,'j01'],
+[/j01_/g,'j01'],
+[/_j0/g,'j0'],
+[/j0_/g,'j0'],
+[/_j351/g,'~j351'],
+[/j351_/g,'j351~'],
+[/_j35/g,'~j35'],
+[/j35_/g,'j35~'],
+[/_j361/g,'~j361'],
+[/j361_/g,'j361~'],
+[/_j36/g,'~j36'],
+[/j36_/g,'j36~'],
+[/_j371/g,'~j371'],
+[/j371_/g,'j371~'],
+[/_j37/g,'~j37'],
+[/j37_/g,'j37~'],
+[/_j31/g,'~j31'],
+[/j31_/g,'j31~'],
+[/_j3/g,'~j3'],
+[/j3_/g,'j3~'],
+[/_j51/g,'~j51'],
+[/j51_/g,'j51~'],
+[/_j5/g,'j5'],
+[/j5_/g,'j5'],
+[/_j61/g,'~j61'],
+[/j61_/g,'j61~'],
+[/_j6/g,'~j6'],
+[/j6_/g,'j6~'],
+[/_j71/g,'~j71'],
+[/j71_/g,'j71~'],
+[/_j7/g,'~j7'],
+[/j7_/g,'j7~'],
+
+        [/_?~_?/g,''],[/ /g,'_____'],[/__/g,'_2'],
+        [/([a-z_][0-9]*)/g,'<img src="$1.gif">'],
+        [/[.](?!gif)/g,'<img src="per.gif">'],
+        [/'/g,'<img src="aps.gif">'],
+        [/:/g,'<img src="col.gif">'],
+        [/;/g,'<img src="que.gif">'],
+        [/,/g,'<img src="com.gif">'],
+        [/\n/g,'<br>\n']
+        );
+  Element.update('t', newt);
+}
+
+function mkuni() {
+ var newnil = $F('betacode').toUpperCase().polysub (
+[/W[(]=[|]/g,'&#8103;'],
+[/H[)]=[|]/g,'&#8086;'],
+[/H[)][/][|]/g,'&#8084;'],
+[/H[(]=[|]/g,'&#8087;'],
+[/A[)][/][|]/g,'&#8068;'],
+[/A[(][/][|]/g,'&#8069;'],
+[/[*]W[)]=/g,'&#8046;'],
+[/[*]W[)][/]/g,'&#8044;'],
+[/[*]W[(]=/g,'&#8047;'],
+[/[*]W[(][/]/g,'&#8047;'],
+[/[*]O[)][/]/g,'&#8012;'],
+[/[*]O[(][/]/g,'&#8015;'],
+[/[*]I[)][/]/g,'&#7996;'],
+[/[*]I[(][/]/g,'&#7999;'],
+[/[*]H[)]\\/g,'&#7978;'],
+[/[*]H[)][/]/g,'&#7980;'],
+[/[*]E[)][/]/g,'&#7964;'],
+[/[*]E[(][/]/g,'&#7965;'],
+[/[*]A[)]=/g,'&#7950;'],
+[/[*]A[)][/]/g,'&#7948;'],
+[/[*]A[(]=/g,'&#7951;'],
+[/[*]A[(][/]/g,'&#7951;'],
+[/[*][)]\\H/g,'&#7978;'],
+[/[*][)]=W/g,'&#8046;'],
+[/[*][)]=H/g,'&#7982;'],
+[/[*][)]=A/g,'&#7950;'],
+[/[*][)][/]W/g,'&#8044;'],
+[/[*][)][/]O/g,'&#8012;'],
+[/[*][)][/]I/g,'&#7996;'],
+[/[*][)][/]H/g,'&#7980;'],
+[/[*][)][/]E/g,'&#7964;'],
+[/[*][)][/]A/g,'&#7948;'],
+[/[*][(]=W/g,'&#8047;'],
+[/[*][(]=U/g,'&#8031;'],
+[/[*][(][/]W/g,'&#8047;'],
+[/[*][(][/]U/g,'&#8029;'],
+[/[*][(][/]O/g,'&#8015;'],
+[/[*][(][/]I/g,'&#7999;'],
+[/[*][(][/]H/g,'&#7983;'],
+[/[*][(][/]E/g,'&#7965;'],
+[/[*][(][/]A/g,'&#7951;'],
+[/[)]\\[*]H/g,'&#7978;'],
+[/[(][/][*]H/g,'&#7983;'],
+[/W[|][/]/g,'&#8180;'],
+[/W=[|]/g,'&#8183;'],
+[/W[/][|]/g,'&#8180;'],
+[/W[)][|]/g,'&#8096;'],
+[/W[)]\\/g,'&#8034;'],
+[/W[)]=/g,'&#8038;'],
+[/W[)][/]/g,'&#8036;'],
+[/W[(]\\/g,'&#8035;'],
+[/W[(]=/g,'&#8039;'],
+[/W[(][/]/g,'&#8037;'],
+[/U\\[+]/g,'&#8162;'],
+[/U[/][+]/g,'&#8163;'],
+[/U[)]\\/g,'&#8018;'],
+[/U[)]=/g,'&#8022;'],
+[/U[)][/]/g,'&#8020;'],
+[/U[(]\\/g,'&#8019;'],
+[/U[(]=/g,'&#8023;'],
+[/U[(][/]/g,'&#8021;'],
+[/O[)]\\/g,'&#8002;'],
+[/O[)][/]/g,'&#8004;'],
+[/O[(]\\/g,'&#8003;'],
+[/O[(][/]/g,'&#8005;'],
+[/I\\[+]/g,'&#8146;'],
+[/I[/][+]/g,'&#8147;'],
+[/I[+][/]/g,'&#8147;'],
+[/I[)]\\/g,'&#7986;'],
+[/I[)]=/g,'&#7990;'],
+[/I[)][/]/g,'&#7988;'],
+[/I[(]\\/g,'&#7987;'],
+[/I[(]=/g,'&#7991;'],
+[/I[(][/]/g,'&#7989;'],
+[/H=[|]/g,'&#8135;'],
+[/H[/][|]/g,'&#8132;'],
+[/H[)][|]/g,'&#8080;'],
+[/H[)]\\/g,'&#7970;'],
+[/H[)]=/g,'&#7974;'],
+[/H[)][/]/g,'&#7972;'],
+[/H[(][|]/g,'&#8081;'],
+[/H[(]\\/g,'&#7971;'],
+[/H[(]=/g,'&#7975;'],
+[/H[(][/]/g,'&#7973;'],
+[/E[)]\\/g,'&#7954;'],
+[/E[)][/]/g,'&#7956;'],
+[/E[(]\\/g,'&#7955;'],
+[/E[(][/]/g,'&#7957;'],
+[/A=[|]/g,'&#8119;'],
+[/A[/][|]/g,'&#8116;'],
+[/A[)]\\/g,'&#7938;'],
+[/A[)]=/g,'&#7942;'],
+[/A[)][/]/g,'&#7940;'],
+[/A[(]\\/g,'&#7939;'],
+[/A[(]=/g,'&#7943;'],
+[/A[(][/]/g,'&#7941;'],
+[/[*]W[)]/g,'&#8040;'],
+[/[*]W[(]/g,'&#8041;'],
+[/[*]U[(]/g,'&#8025;'],
+[/[*]R[(]/g,'&#8172;'],
+[/[*]O[)]/g,'&#8008;'],
+[/[*]O[(]/g,'&#8009;'],
+[/[*]I[)]/g,'&#7992;'],
+[/[*]I[(]/g,'&#7993;'],
+[/[*]H[)]/g,'&#7976;'],
+[/[*]H[(]/g,'&#7977;'],
+[/[*]E[)]/g,'&#7960;'],
+[/[*]E[(]/g,'&#7961;'],
+[/[*]A[)]/g,'&#7944;'],
+[/[*]A[(]/g,'&#7945;'],
+[/[*][)]O/g,'&#8008;'],
+[/[*][)]I/g,'&#7992;'],
+[/[*][)]H/g,'&#7976;'],
+[/[*][)]E/g,'&#7960;'],
+[/[*][)]A/g,'&#7944;'],
+[/[*][(]W/g,'&#8041;'],
+[/[*][(]U/g,'&#8025;'],
+[/[*][(]R/g,'&#8172;'],
+[/[*][(]O/g,'&#8009;'],
+[/[*][(]\O/g,'&#8011;'],
+[/[*][(]I/g,'&#7993;'],
+[/[*][(]H/g,'&#7977;'],
+[/[*][(]\E/g,'&#7963;'],
+[/[*][(]E/g,'&#7961;'],
+[/[*][(]A/g,'&#7945;'],
+[/[*][(]\A/g,'&#7947;'],
+[/W[|]/g,'&#8179;'],
+[/W\\/g,'&#8060;'],
+[/W=/g,'&#8182;'],
+[/W[/]/g,'&#8061;'],
+[/W[)]/g,'&#8032;'],
+[/W[(]/g,'&#8033;'],
+[/U\\/g,'&#8058;'],
+[/U=/g,'&#8166;'],
+[/U[/]/g,'&#8059;'],
+[/U[+]/g,'&#971;'],
+[/U[)]/g,'&#8016;'],
+[/U[(]/g,'&#8017;'],
+[/S(?=[.:;,\n ])/g,'&#962;'],
+[/R[(]/g,'&#8164;'],
+[/O\\/g,'&#8056;'],
+[/O[/]/g,'&#8057;'],
+[/O[)]/g,'&#8000;'],
+[/O[(]/g,'&#8001;'],
+[/I\\/g,'&#8054;'],
+[/I=/g,'&#8150;'],
+[/I[/]/g,'&#8055;'],
+[/I[+]/g,'&#970;'],
+[/I[)]/g,'&#7984;'],
+[/I[(]/g,'&#7985;'],
+[/H[|]/g,'&#8131;'],
+[/H\\/g,'&#8052;'],
+[/H=/g,'&#8134;'],
+[/H[/]/g,'&#8053;'],
+[/H[)]/g,'&#7968;'],
+[/H[(]/g,'&#7969;'],
+[/E\\/g,'&#8050;'],
+[/E[/]/g,'&#8051;'],
+[/E[)]/g,'&#7952;'],
+[/E[(]/g,'&#7953;'],
+[/A[|]/g,'&#8115;'],
+[/A\\/g,'&#8048;'],
+[/A=/g,'&#8118;'],
+[/A[/]/g,'&#8049;'],
+[/A[)]/g,'&#7936;'],
+[/A[(]/g,'&#7937;'],
+[/[*]Z/g,'&#918;'],
+[/[*]Y/g,'&#936;'],
+[/[*]X/g,'&#935;'],
+[/[*]W/g,'&#937;'],
+[/[*]U/g,'&#933;'],
+[/[*]T/g,'&#932;'],
+[/[*]S/g,'&#931;'],
+[/[*]R/g,'&#929;'],
+[/[*]Q/g,'&#920;'],
+[/[*]P/g,'&#928;'],
+[/[*]O/g,'&#927;'],
+[/[*]N/g,'&#925;'],
+[/[*]M/g,'&#924;'],
+[/[*]L/g,'&#923;'],
+[/[*]K/g,'&#922;'],
+[/[*]I/g,'&#921;'],
+[/[*]H/g,'&#919;'],
+[/[*]G/g,'&#915;'],
+[/[*]F/g,'&#934;'],
+[/[*]E/g,'&#917;'],
+[/[*]D/g,'&#916;'],
+[/[*]C/g,'&#926;'],
+[/[*]B/g,'&#914;'],
+[/[*]A/g,'&#913;'],
+[/Z/g,'&#950;'],
+[/Y/g,'&#968;'],
+[/X/g,'&#967;'],
+[/W/g,'&#969;'],
+[/U/g,'&#965;'],
+[/T/g,'&#964;'],
+[/S/g,'&#963;'],
+[/R/g,'&#961;'],
+[/Q/g,'&#952;'],
+[/P/g,'&#960;'],
+[/O/g,'&#959;'],
+[/N/g,'&#957;'],
+[/M/g,'&#956;'],
+[/L/g,'&#955;'],
+[/K/g,'&#954;'],
+[/I/g,'&#953;'],
+[/H/g,'&#951;'],
+[/G/g,'&#947;'],
+[/F/g,'&#966;'],
+[/E/g,'&#949;'],
+[/D/g,'&#948;'],
+[/C/g,'&#958;'],
+[/B/g,'&#946;'],
+[/A/g,'&#945;'],
+[/\n/g,'<br>\n']
+
+);
+
+  Element.update('nil',newnil);
+
+}
+
+Object.extend(String.prototype, {
+  polysub: function() {
+    var nu = this;
+    for(var i=0; i<arguments.length;i++) {
+      nu = nu.replace(arguments[i][0],arguments[i][1]);
+    }
+    return nu;
+  }
+});
+"class String;def polysub(*a) a.inject(self) {|s,params| s.sub(*params)} end";
+
+
+function testsub() {
+  return "car".polysub([/r/,'t'],[/c/,'r']);
+}      
+
+function fixt() {
+        Element.update('t', "polutoniko lcd: ready.");
+        Element.update('nil', "the browser's unicode greek font: ready.");
+}
+</script>
+<body onload="javascript:fixt();"><center>
+<font size=+1><b>Polutoniko LCD: A Screen Font for Ancient Greek.</b></font><p>
+<textarea id="betacode" rows="10" cols="80">
+MH=NIN A)/EIDE QEA\ *PHLHI+A/DEW *)AXILH=OS
+OU)LOME/NHN, H(\ MURI/' *)AXAIOI=S A)/LGE' E)/QHKE,
+POLLA\S D' I)FQI/MOUS YUXA\S *)/AI+DI PROI+/AYEN
+H(RW/WN, AU)TOU\S DE\ E(LW/RIA TEU=XE KU/NESSIN
+OI)WNOI=SI/ TE PA=SI, *DIO\S D' E)TELEI/ETO BOULH/,
+E)C OU(= DH\ TA\ PRW=TA DIASTH/THN E)RI/SANTE
+*)ATREI+/DHS TE A)/NAC A)NDRW=N KAI\ DI=OS *)AXILLEU/S.
+
+TI/S T' A)/R SFWE QEW=N E)/RIDI CUNE/HKE MA/XESQAI;
+*LHTOU=S KAI\ *DIO\S UI(O/S: O(\ GA\R BASILH=I+ XOLWQEI\S
+NOU=SON A)NA\ STRATO\N O)/RSE KAKH/N, O)LE/KONTO DE\ LAOI/,
+OU(/NEKA TO\N *XRU/SHN H)TI/MASEN A)RHTH=RA
+*)ATREI+/DHS: O(\ GA\R H)=LQE QOA\S E)PI\ NH=AS *)AXAIW=N
+LUSO/MENO/S TE QU/GATRA FE/RWN T' A)PEREI/SI' A)/POINA,
+STE/MMAT' E)/XWN E)N XERSI\N E(KHBO/LOU *)APO/LLWNOS
+XRUSE/W| A)NA\ SKH/PTRW|, KAI\ LI/SSETO PA/NTAS *)AXAIOU/S,
+*)ATREI+/DA DE\ MA/LISTA DU/W, KOSMH/TORE LAW=N:
+*)ATREI+/DAI TE KAI\ A)/LLOI E)U+KNH/MIDES *)AXAIOI/,
+U(MI=N ME\N QEOI\ DOI=EN *)OLU/MPIA DW/MAT' E)/XONTES
+E)KPE/RSAI *PRIA/MOIO PO/LIN, EU)= D' OI)/KAD' I(KE/SQAI:
+PAI=DA D' E)MOI\ LU/SAITE FI/LHN, TA\ D' A)/POINA DE/XESQAI,
+A(ZO/MENOI *DIO\S UI(O\N E(KHBO/LON *)APO/LLWNA.
+
+E)/NQ' A)/LLOI ME\N PA/NTES E)PEUFH/MHSAN *)AXAIOI\
+AI)DEI=SQAI/ Q' I(ERH=A KAI\ A)GLAA\ DE/XQAI A)/POINA:
+A)LL' OU)K *)ATREI+/DH| *)AGAME/MNONI H(/NDANE QUMW=|,
+A)LLA\ KAKW=S A)FI/EI, KRATERO\N D' E)PI\ MU=QON E)/TELLE:
+
+MH/ SE GE/RON KOI/LH|SIN E)GW\ PARA\ NHUSI\ KIXEI/W
+H)\ NU=N DHQU/NONT' H)\ U(/STERON AU)=TIS I)O/NTA,
+MH/ NU/ TOI OU) XRAI/SMH| SKH=PTRON KAI\ STE/MMA QEOI=O:
+TH\N D' E)GW\ OU) LU/SW: PRI/N MIN KAI\ GH=RAS E)/PEISIN
+H(METE/RW| E)NI\ OI)/KW| E)N *)/ARGEI+ THLO/QI PA/TRHS
+I(STO\N E)POIXOME/NHN KAI\ E)MO\N LE/XOS A)NTIO/WSAN:
+A)LL' I)/QI MH/ M' E)RE/QIZE SAW/TEROS W(/S KE NE/HAI.
+</textarea>
+<br>
+<a href="javascript:rendre();">render >></a>
+<br><br>
+<table>
+<tr><td width="45%" valign="top">
+<span id="t">please <a href="http://getfirefox.com">change browsers</a>.<br><br>
+this demo renders Polutoniko LCD with javascript in firefox/ie6,<br>
+but the glyphs could easily be composited on the server.<br>
+</span>
+</td><td>&nbsp;</td><td width="45%" valign="top">
+<span id="nil"></span></tr></table>
+<p>&nbsp;<p>
+<font size="-2">the glyphs were generated excellently using some <a href="glyphs.hs">haskell code</a>.<br>  it generated 
+<i>kernings</i>, the first clump of regexp substitutions in javascript here.<br> using one line of <a 
+href="http://cafepress.com/pulchritude">Ruby</a>, i shuffled james tauber's <a 
+href="http://www.jtauber.com/blog/2005/01/27/betacode_to_unicode_in_python">beta code to unicode</a> conversion,<br>
+which became the second huge clump of javascript regexp substitutions.</font>
+<p>_
+<img src='_2.gif' width='0' height='0'><img src='a01.gif' width='0' height='0'><img src='a051.gif' width='0' height='0'><img src='a05.gif' width='0' height='0'><img src='a061.gif' width='0' height='0'><img src='a06.gif' width='0' height='0'><img src='a071.gif' width='0' height='0'><img src='a07.gif' width='0' height='0'><img src='a0.gif' width='0' height='0'><img src='a1.gif' width='0' height='0'><img src='a2.gif' width='0' height='0'><img src='a31.gif' width='0' height='0'><img src='a351.gif' width='0' height='0'><img src='a35.gif' width='0' height='0'><img src='a361.gif' width='0' height='0'><img src='a36.gif' width='0' height='0'><img src='a371.gif' width='0' height='0'><img src='a37.gif' width='0' height='0'><img src='a3.gif' width='0' height='0'><img src='a51.gif' width='0' height='0'><img src='a5.gif' width='0' height='0'><img src='a61.gif' width='0' height='0'><img src='a6.gif' width='0' height='0'><img src='a71.gif' width='0' height='0'><img src='a7.gif' width='0' height='0'><img src='a91.gif' width='0' height='0'><img src='a951.gif' width='0' height='0'><img src='a95.gif' width='0' height='0'><img src='a961.gif' width='0' height='0'><img src='a96.gif' width='0' height='0'><img src='a971.gif' width='0' height='0'><img src='a97.gif' width='0' height='0'><img src='a9.gif' width='0' height='0'><img src='a.gif' width='0' height='0'><img src='aps.gif' width='0' height='0'><img src='b2.gif' width='0' height='0'><img src='b.gif' width='0' height='0'><img src='c2.gif' width='0' height='0'><img src='c.gif' width='0' height='0'><img src='col.gif' width='0' height='0'><img src='com.gif' width='0' height='0'><img src='d2.gif' width='0' height='0'><img src='d.gif' width='0' height='0'><img src='e05.gif' width='0' height='0'><img src='e07.gif' width='0' height='0'><img src='e0.gif' width='0' height='0'><img src='e2.gif' width='0' height='0'><img src='e35.gif' width='0' height='0'><img src='e37.gif' width='0' height='0'><img src='e3.gif' width='0' height='0'><img src='e5.gif' width='0' height='0'><img src='e7.gif' width='0' height='0'><img src='e95.gif' width='0' height='0'><img src='e97.gif' width='0' height='0'><img src='e9.gif' width='0' height='0'><img src='e.gif' width='0' height='0'><img src='f2.gif' width='0' height='0'><img src='f.gif' width='0' height='0'><img src='g2.gif' width='0' height='0'><img src='g.gif' width='0' height='0'><img src='_.gif' width='0' height='0'><img src='h01.gif' width='0' height='0'><img src='h051.gif' width='0' height='0'><img src='h05.gif' width='0' height='0'><img src='h061.gif' width='0' height='0'><img src='h06.gif' width='0' height='0'><img src='h071.gif' width='0' height='0'><img src='h07.gif' width='0' height='0'><img src='h0.gif' width='0' height='0'><img src='h1.gif' width='0' height='0'><img src='h2.gif' width='0' height='0'><img src='h31.gif' width='0' height='0'><img src='h351.gif' width='0' height='0'><img src='h35.gif' width='0' height='0'><img src='h361.gif' width='0' height='0'><img src='h36.gif' width='0' height='0'><img src='h371.gif' width='0' height='0'><img src='h37.gif' width='0' height='0'><img src='h3.gif' width='0' height='0'><img src='h51.gif' width='0' height='0'><img src='h5.gif' width='0' height='0'><img src='h61.gif' width='0' height='0'><img src='h6.gif' width='0' height='0'><img src='h71.gif' width='0' height='0'><img src='h7.gif' width='0' height='0'><img src='h91.gif' width='0' height='0'><img src='h951.gif' width='0' height='0'><img src='h95.gif' width='0' height='0'><img src='h961.gif' width='0' height='0'><img src='h96.gif' width='0' height='0'><img src='h971.gif' width='0' height='0'><img src='h97.gif' width='0' height='0'><img src='h9.gif' width='0' height='0'><img src='h.gif' width='0' height='0'><img src='i05.gif' width='0' height='0'><img src='i06.gif' width='0' height='0'><img src='i07.gif' width='0' height='0'><img src='i0.gif' width='0' height='0'><img src='i2.gif' width='0' height='0'><img src='i35.gif' width='0' height='0'><img src='i36.gif' width='0' height='0'><img src='i37.gif' width='0' height='0'><img src='i3.gif' width='0' height='0'><img src='i5.gif' width='0' height='0'><img src='i6.gif' width='0' height='0'><img src='i7.gif' width='0' height='0'><img src='i95.gif' width='0' height='0'><img src='i96.gif' width='0' height='0'><img src='i97.gif' width='0' height='0'><img src='i9.gif' width='0' height='0'><img src='i.gif' width='0' height='0'><img src='j05.gif' width='0' height='0'><img src='j06.gif' width='0' height='0'><img src='j07.gif' width='0' height='0'><img src='j0.gif' width='0' height='0'><img src='j2.gif' width='0' height='0'><img src='j35.gif' width='0' height='0'><img src='j36.gif' width='0' height='0'><img src='j37.gif' width='0' height='0'><img src='j3.gif' width='0' height='0'><img src='j5.gif' width='0' height='0'><img src='j6.gif' width='0' height='0'><img src='j7.gif' width='0' height='0'><img src='j95.gif' width='0' height='0'><img src='j96.gif' width='0' height='0'><img src='j97.gif' width='0' height='0'><img src='j9.gif' width='0' height='0'><img src='j.gif' width='0' height='0'><img src='k2.gif' width='0' height='0'><img src='k.gif' width='0' height='0'><img src='l2.gif' width='0' height='0'><img src='l.gif' width='0' height='0'><img src='m2.gif' width='0' height='0'><img src='m.gif' width='0' height='0'><img src='n2.gif' width='0' height='0'><img src='n.gif' width='0' height='0'><img src='null.gif' width='0' height='0'><img src='o05.gif' width='0' height='0'><img src='o07.gif' width='0' height='0'><img src='o0.gif' width='0' height='0'><img src='o2.gif' width='0' height='0'><img src='o35.gif' width='0' height='0'><img src='o37.gif' width='0' height='0'><img src='o3.gif' width='0' height='0'><img src='o5.gif' width='0' height='0'><img src='o7.gif' width='0' height='0'><img src='o95.gif' width='0' height='0'><img src='o97.gif' width='0' height='0'><img src='o9.gif' width='0' height='0'><img src='o.gif' width='0' height='0'><img src='p2.gif' width='0' height='0'><img src='per.gif' width='0' height='0'><img src='p.gif' width='0' height='0'><img src='q2.gif' width='0' height='0'><img src='q.gif' width='0' height='0'><img src='que.gif' width='0' height='0'><img src='r2.gif' width='0' height='0'><img src='r9.gif' width='0' height='0'><img src='r.gif' width='0' height='0'><img src='s1.gif' width='0' height='0'><img src='s2.gif' width='0' height='0'><img src='s.gif' width='0' height='0'><img src='t2.gif' width='0' height='0'><img src='t.gif' width='0' height='0'><img src='u05.gif' width='0' height='0'><img src='u06.gif' width='0' height='0'><img src='u07.gif' width='0' height='0'><img src='u0.gif' width='0' height='0'><img src='u2.gif' width='0' height='0'><img src='u35.gif' width='0' height='0'><img src='u36.gif' width='0' height='0'><img src='u37.gif' width='0' height='0'><img src='u3.gif' width='0' height='0'><img src='u5.gif' width='0' height='0'><img src='u6.gif' width='0' height='0'><img src='u7.gif' width='0' height='0'><img src='u95.gif' width='0' height='0'><img src='u96.gif' width='0' height='0'><img src='u97.gif' width='0' height='0'><img src='u9.gif' width='0' height='0'><img src='u.gif' width='0' height='0'><img src='w01.gif' width='0' height='0'><img src='w051.gif' width='0' height='0'><img src='w05.gif' width='0' height='0'><img src='w061.gif' width='0' height='0'><img src='w06.gif' width='0' height='0'><img src='w071.gif' width='0' height='0'><img src='w07.gif' width='0' height='0'><img src='w0.gif' width='0' height='0'><img src='w1.gif' width='0' height='0'><img src='w2.gif' width='0' height='0'><img src='w31.gif' width='0' height='0'><img src='w351.gif' width='0' height='0'><img src='w35.gif' width='0' height='0'><img src='w361.gif' width='0' height='0'><img src='w36.gif' width='0' height='0'><img src='w371.gif' width='0' height='0'><img src='w37.gif' width='0' height='0'><img src='w3.gif' width='0' height='0'><img src='w51.gif' width='0' height='0'><img src='w5.gif' width='0' height='0'><img src='w61.gif' width='0' height='0'><img src='w6.gif' width='0' height='0'><img src='w71.gif' width='0' height='0'><img src='w7.gif' width='0' height='0'><img src='w91.gif' width='0' height='0'><img src='w951.gif' width='0' height='0'><img src='w95.gif' width='0' height='0'><img src='w961.gif' width='0' height='0'><img src='w96.gif' width='0' height='0'><img src='w971.gif' width='0' height='0'><img src='w97.gif' width='0' height='0'><img src='w9.gif' width='0' height='0'><img src='w.gif' width='0' height='0'><img src='x2.gif' width='0' height='0'><img src='x.gif' width='0' height='0'><img src='y2.gif' width='0' height='0'><img src='y.gif' width='0' height='0'><img src='z2.gif' width='0' height='0'><img src='z.gif' width='0' height='0'>
+_</center></body>
+</html>
