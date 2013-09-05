@@ -2,3 +2,4 @@ Flights of fancy in my younger and more vulnerable days: a few hundred lines of 
 
 Modifications since my bachelor's thesis:
 * Scansion of any meter (master's work)
+* Log-time word lemmatization scansion lookup, temp file cleanup (sqlite3 vs flat file)
