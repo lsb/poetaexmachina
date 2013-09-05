@@ -1,5 +1,5 @@
 
-BEGIN   {RS="[^0-9a-z%\|]+";FS="";ORS=""}
+BEGIN   {RS="[^0-9a-z%|]+";FS="";ORS=""}
 
 {
 
