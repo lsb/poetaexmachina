@@ -1,0 +1,18 @@
+This is Poeta ex Machina, a Text-to-Phoneme synthesizer for Latin poetry that uses MBROLA for speech synthesis.  The intonation is punctuation-based, not grammar-based, and the pronunciation is Classical.
+
+The licensing terms of MBROLA is that it's only for non-commercial research purposes only, and not to be distributed, so it is therefore not included.
+If you need to download the diphone database, it's http://poetaexmachina.net/i, the ITalian2 voice, and the executable is http://poetaexmachina.net/m.  
+
+Please note that the original phoneme synthesis was 300 lines of gnu awk code, with 100 [sic] regular expression substitutions.
+The scansion engine is entirely new Ruby 1.6.7 code, but it still uses textual data structures.
+The word lookups are similarly new as well, borrowed from LiberStatim; it'd be possible to get some speedup by combining the input-text-to-scanned-text process into one longer Ruby script.
+(No one's complained about the speed yet, so it stands as is.)
+
+The PHP 4 web interface was praised for its simplicity at ACL 2005, where this was first introduced to the world.
+
+This is an archive of Poeta ex Machina as it appeared on Tuesday 29 May 2007.  All code is released under GPL version 2.
+
+Lee Butterman
+
+
+(My final paper for Reid's Roman Satire class, in fall 2005, dealt with metrically analyzing Horace, Juvenal, et al, so the paper and related data are also included.)
