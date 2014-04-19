@@ -1,0 +1,3 @@
+#!/bin/sh
+awk -f phobunch.awk $1 |awk -f amp.awk |awk -f mrj.awk |awk -f unamp.awk |awk -f postamp.awk \
+|awk -f nudiv.awk |ruby scansia.r |awk -f inc.awk |awk -f scansia.awk > $1.meter

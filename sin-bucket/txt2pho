@@ -1,0 +1,5 @@
+#!/bin/sh
+awk -f amp.awk $1.txt |awk -f mrj.awk |awk -f unamp.awk |awk -f postamp.awk \
+|awk -f nudiv.awk |awk -f scan11.awk |awk -f inc.awk |awk -f d2m.awk \
+|awk -f spkfmt.awk |awk -f spk.awk |awk -f phostrip.awk \
+|awk -f phobunch.awk |awk -f phofix.awk >$1.pho

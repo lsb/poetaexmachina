@@ -1,0 +1,55 @@
+#load 'amb.r'
+load 'listmanips.r'
+
+Mfile = ARGV[0]
+$linect = 0  # the read loop changes this
+def strmeter
+  (File.readlines(Mfile,'/')*4)[$linect].downcase.tr('^lrsa','').split('')
+end
+el = '[468]'
+es = '[04]'
+parens = lambda {|*args| "(#{args.join '|'})" }
+Syll = %w{l s a r}.hashwith( [el,es,[el,es],[el,es*2]].map(&parens).group(%w{8 0 0 8}) )
+def meter
+  Regexp.new strmeter.join.gsub(/./) {|c| Syll[c][0]}
+end
+Vowel = /[0468](?=[^0468]*\/)/
+
+def getvowels(s) s.scan(Vowel).join.match(meter).to_a.cdr end
+def fix4s(m)
+  m.group(strmeter.map {|type| Syll[type][1]}).map {|orig, new4|
+      orig == '4' ? new4 : orig.tr('4','0')
+    }
+end
+def workit(oneline)
+  l = oneline.sub /\s*$/, '/' # a Vowel needs a trailing '/'
+  v = getvowels l
+  if v
+    v = fix4s(v).join
+    l.gsub!(Vowel) {v.slice! 0,1} # slice! needs the join, to get exactly 1 char
+  end
+  [l[0..-2],v] # [0..-2] takes off the trailing '/'; puts will add the '\n'
+end
+
+def polygsub(s,rgxarr,&b)
+  pos = lambda {|r| q = s.index r; q ? q : s.length} # if no match, make it fall off
+  r = rgxarr.min {|r0, r1| pos[r0] <=> pos[r1]}
+  m = r.match s
+  m ? m.pre_match + b[r,m.to_s] + polygsub(m.post_match,rgxarr, &b) : s
+end
+
+Common = [/[68](?=\s*[ptkbdg]\/[lr])/,'4']
+synhiamon = {
+/(%.)[04]\/h?%(?=[0468])/ => '\1',
+/[048](?=[^\/]*%)/ => '\&/',
+/%(.)(.)[48]/ => '%\14/%\24',
+}
+
+#vae1 = File.readlines('vae.unsc')
+
+def workaline(s)
+  ssc = workit(s)
+  ssc[1] ? ssc : workit(s.gsub(*Common))
+end
+
+puts STDIN.readlines.indexedhash.to_a.sort.map {|num,l| $linect = num%4;workaline(l)[0]}
