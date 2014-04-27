@@ -1,0 +1,18 @@
+<html>
+<?php
+
+$n = 150;
+$b = " WAR IS PEACE";
+$txt = file_get_contents("1984tildesss");
+
+while($n-- > 0) {
+	$rbufplusone = '/'.preg_quote($b)." +[^ ]+/";
+	preg_match_all($rbufplusone,$txt,$recherche);
+	$recherche=$recherche[0];
+	$nu=$recherche[array_rand($recherche)];
+	preg_match("/( +[^ ]+)(.+)/",$nu,$schism);
+	print preg_replace('/~/','<br />',$schism[1]);
+	$b = $schism[2];
+}
+?>
+</html>
