@@ -1,8 +1,6 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    puma (2.8.2-java)
-      rack (>= 1.1, < 2.0)
     rack (1.5.2)
     rack-protection (1.5.3)
       rack
@@ -14,7 +12,7 @@ GEM
 
 PLATFORMS
   java
+  ruby
 
 DEPENDENCIES
-  puma
   sinatra
