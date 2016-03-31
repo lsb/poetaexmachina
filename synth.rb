@@ -24,7 +24,7 @@ class PoetaExMachina
     pho_tmp = new_tmp_path
     wav_tmp = new_tmp_path + ".wav"
     mp3_tmp = new_tmp_path + ".mp3"
-    pipeline = "cat - > #{pho_tmp}; ./mbrola-linux-i386 -f 2.1 -l 15000 -t 1.2 i #{pho_tmp} #{wav_tmp}; lame --quiet -b 40 -m m -q 7 --noreplaygain --resample 22.05 -t #{wav_tmp} #{mp3_tmp} ; cat #{mp3_tmp}"
+    pipeline = "cat - > #{pho_tmp}; mbrola -f 2.1 -l 15000 -t 1.2 i #{pho_tmp} #{wav_tmp}; lame --quiet -b 40 -m m -q 7 --noreplaygain --resample 22.05 -t #{wav_tmp} #{mp3_tmp} ; cat #{mp3_tmp}"
     mp3 = run_rw_pipe(pipeline, pho)
     File.delete(pho_tmp, wav_tmp, mp3_tmp)
     mp3
