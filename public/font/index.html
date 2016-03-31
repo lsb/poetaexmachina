@@ -4,18 +4,18 @@
 <script>
 
 function rendre() {
-  Element.update($('t'),"aligning glyphs...");
-  Element.update($('nil'),"generating unicode...");
+  document.getElementById('t').innerHTML = "aligning glyphs...";
+  document.getElementById('nil').innerHTML = "generating unicode...";
   setTimeout("mkfont();",1);
   setTimeout("mkuni();",1);
 }
 
 function mkfont() {
-  Element.update('t', bcht($F('betacode').replace(/\n/g,'@')));
+  document.getElementById('t').innerHTML = bcht(document.getElementById('betacode').value.replace(/\n/g,'@'));
 }
 
 function mkuni() {
- var newnil = $F('betacode').toUpperCase().polysub (
+ var newnil = document.getElementById('betacode').value.toUpperCase().polysub (
 [/W[(]=[|]/g,'&#8103;'],
 [/H[)]=[|]/g,'&#8086;'],
 [/H[)][/][|]/g,'&#8084;'],
@@ -234,13 +234,13 @@ function mkuni() {
 
 );
 
-  Element.update('nil',newnil);
+  document.getElementById('nil').innerHTML = newnil;
 
 }
 
 function fixt() {
-        Element.update('t', "polutoniko lcd is here.");
-        Element.update('nil', "a browser-native greek font is here.");
+        document.getElementById('t').innerHTML = "polutoniko lcd is here.";
+        document.getElementById('nil').innerHTML = "a browser-native greek font is here.";
 }
 </script>
 <body onload="javascript:fixt();"><center>
