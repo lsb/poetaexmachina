@@ -1,2 +1,0 @@
-BEGIN {FS=".ppm"}
-/./ { system("ppmtogif " $1 ".ppm > " $1 ".gif")}
