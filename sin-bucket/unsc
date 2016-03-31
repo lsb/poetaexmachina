@@ -1,2 +1,0 @@
-#!/bin/sh
-awk -f amp.awk - |awk -f mrj.awk |awk -f unamp.awk |awk -f postamp.awk |awk -f nudiv.awk
