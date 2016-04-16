@@ -5,4 +5,5 @@ RUN apt-get install -y sqlite3 gawk lame mbrola
 COPY . /poetaexmachina
 WORKDIR /poetaexmachina
 RUN bundle install
+EXPOSE 80
 CMD ruby app.rb -p 80 -e production
