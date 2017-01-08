@@ -1,4 +1,4 @@
-FROM ruby:2.3
+FROM ruby:2.4-slim
 RUN sed -i 's/$/ contrib non-free/' /etc/apt/sources.list
 RUN apt-get update
 RUN apt-get install -y sqlite3 gawk lame mbrola
