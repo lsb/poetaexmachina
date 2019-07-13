@@ -1,6 +1,8 @@
 require 'sinatra'
 require './synth'
 
+set :protection, :except => :frame_options
+
 get('/') {
   erb :index, :locals => {}
 }
