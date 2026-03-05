@@ -30,10 +30,8 @@ process_one_file() {
     local text_json=$(printf '%s' "$text" | jq -Rs .)
     local old_intermediate_json=$(printf '%s' "$text" | ./synth_old_intermediate.sh "$meter" 2>/dev/null | jq -Rs .)
     local new_intermediate_json=$(printf '%s' "$text" | ./synth_new_intermediate.sh "$meter" 2>/dev/null | jq -Rs .)
-    # local old_pho_json=$(printf '%s' "$text" | ./synth_old.sh "$meter" 2>/dev/null | jq -Rs .)
-    # local new_pho_json=$(printf '%s' "$text" | ./synth_new.sh "$meter" 2>/dev/null | jq -Rs .)
-    local old_pho_json='""'
-    local new_pho_json='""'
+    local old_pho_json=$(printf '%s' "$text" | ./synth_old.sh "$meter" 2>/dev/null | jq -Rs .)
+    local new_pho_json=$(printf '%s' "$text" | ./synth_new.sh "$meter" 2>/dev/null | jq -Rs .)
 
     # Output JSONL record
     printf '{"text":%s,"old_intermediate":%s,"new_intermediate":%s,"old_pho":%s,"new_pho":%s}\n' \
@@ -46,6 +44,7 @@ if [[ -n "$1" ]]; then
     exit 0
 fi
 
-# Otherwise, find all matching files and process with parallel
-find sample-texts \( -name '1*.txt' -o -name '2*.txt' \) -print0 | \
-    parallel -0 -j16 "$0" {}
+# Otherwise, find all matching files and process sequentially
+for file in sample-texts/1*.txt sample-texts/2*.txt; do
+    [ -f "$file" ] && process_one_file "$file"
+done

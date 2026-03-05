@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poeta Ex Machina - Browser Demo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #1a1a2e;
+      color: #eee;
+    }
+    h1 {
+      color: #e94560;
+      text-align: center;
+    }
+    .subtitle {
+      text-align: center;
+      color: #888;
+      margin-bottom: 30px;
+    }
+    .card {
+      background: #16213e;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #0f4c75;
+    }
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 12px;
+      border: 1px solid #333;
+      border-radius: 4px;
+      font-family: 'Times New Roman', serif;
+      font-size: 18px;
+      background: #0f3460;
+      color: #fff;
+      resize: vertical;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: #e94560;
+    }
+    select, input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #333;
+      border-radius: 4px;
+      font-size: 14px;
+      background: #0f3460;
+      color: #fff;
+    }
+    button {
+      background: #e94560;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-right: 10px;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #c73e54;
+    }
+    button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+    .status {
+      padding: 15px;
+      border-radius: 4px;
+      margin-top: 15px;
+    }
+    .status.loading {
+      background: #1b3a5f;
+      border-left: 4px solid #3498db;
+    }
+    .status.success {
+      background: #1d3d2f;
+      border-left: 4px solid #27ae60;
+    }
+    .status.error {
+      background: #3d1d1d;
+      border-left: 4px solid #e74c3c;
+    }
+    .pho-output {
+      font-family: monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      max-height: 200px;
+      overflow-y: auto;
+      background: #0d1b2a;
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 10px;
+    }
+    .row {
+      display: flex;
+      gap: 15px;
+    }
+    .row > div {
+      flex: 1;
+    }
+    .examples {
+      margin-top: 10px;
+    }
+    .example-btn {
+      background: #0f4c75;
+      font-size: 12px;
+      padding: 6px 12px;
+      margin: 3px;
+    }
+    .example-btn:hover {
+      background: #1a6a9e;
+    }
+    audio {
+      width: 100%;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Poeta Ex Machina</h1>
+  <p class="subtitle">Latin Poetry Speech Synthesis in the Browser</p>
+
+  <div class="card">
+    <div id="init-status" class="status loading">
+      Initializing... Please wait while resources load.
+    </div>
+  </div>
+
+  <div class="card">
+    <label for="text">Latin Text:</label>
+    <textarea id="text" placeholder="Enter Latin text here...">Arma virumque cano, Troiae qui primus ab oris
+Italiam, fato profugus, Laviniaque venit
+litora, multum ille et terris iactatus et alto
+vi superum saevae memorem Iunonis ob iram</textarea>
+
+    <div class="examples">
+      <span style="color: #888; font-size: 12px;">Examples:</span>
+      <button class="example-btn" onclick="loadExample('aeneid')">Aeneid I.1-4</button>
+      <button class="example-btn" onclick="loadExample('catullus')">Catullus 5</button>
+      <button class="example-btn" onclick="loadExample('horace')">Horace Odes 1.1</button>
+      <button class="example-btn" onclick="loadExample('ovid')">Ovid Met. 1.1-4</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <div>
+        <label for="meter">Meter:</label>
+        <select id="meter">
+          <option value="lrlrlrlrlrla" selected>Dactylic Hexameter</option>
+          <option value="lrlrlalrlrla">Elegiac Pentameter</option>
+          <option value="aalsslalass">Hendecasyllable</option>
+          <option value="laalaasslax">Sapphic</option>
+          <option value="alaalaasla">Alcaic</option>
+          <option value="custom">Custom...</option>
+        </select>
+      </div>
+      <div id="custom-meter-container" style="display: none;">
+        <label for="custom-meter">Custom Meter Pattern:</label>
+        <input type="text" id="custom-meter" placeholder="e.g., lrlrlrlrlrla" value="">
+      </div>
+    </div>
+    <p style="font-size: 12px; color: #888; margin-top: 8px;">
+      l=long, s=short, a=anceps, r=resolvable (long or two shorts)
+    </p>
+  </div>
+
+  <div class="card">
+    <button id="speak-btn" onclick="synthesizeAndPlay()" disabled>Speak</button>
+    <button id="download-btn" onclick="downloadWav()" disabled>Download WAV</button>
+    <button onclick="showPho()">Show .pho</button>
+
+    <div id="synthesis-status" class="status" style="display: none;"></div>
+
+    <audio id="audio-player" controls style="display: none;"></audio>
+
+    <div id="pho-container" style="display: none;">
+      <h4 style="margin: 15px 0 5px 0;">Generated .pho:</h4>
+      <div id="pho-output" class="pho-output"></div>
+    </div>
+  </div>
+
+  <!-- Load synthesis.js (text-to-pho pipeline) -->
+  <script src="../synthesis.js"></script>
+
+  <!-- Load MBROLA WASM (will be generated by build.sh) -->
+  <script src="mbrola.js"></script>
+
+  <!-- Load wrapper and integration -->
+  <script src="mbrola-wrapper.js"></script>
+  <script src="poeta-browser.js"></script>
+
+  <script>
+    // Example texts
+    const EXAMPLES = {
+      aeneid: {
+        text: `Arma virumque cano, Troiae qui primus ab oris
+Italiam, fato profugus, Laviniaque venit
+litora, multum ille et terris iactatus et alto
+vi superum saevae memorem Iunonis ob iram`,
+        meter: 'lrlrlrlrlrla'
+      },
+      catullus: {
+        text: `Vivamus, mea Lesbia, atque amemus,
+rumoresque senum severiorum
+omnes unius aestimemus assis.
+Soles occidere et redire possunt:
+nobis cum semel occidit brevis lux,
+nox est perpetua una dormienda.`,
+        meter: 'aalsslalass'
+      },
+      horace: {
+        text: `Maecenas atavis edite regibus,
+o et praesidium et dulce decus meum,
+sunt quos curriculo pulverem Olympicum
+collegisse iuvat metaque fervidis`,
+        meter: 'laalaasslax'
+      },
+      ovid: {
+        text: `In nova fert animus mutatas dicere formas
+corpora; di, coeptis, nam vos mutastis et illa,
+adspirate meis primaque ab origine mundi
+ad mea perpetuum deducite tempora carmen.`,
+        meter: 'lrlrlrlrlrla'
+      }
+    };
+
+    // Global state
+    let poeta = null;
+    let lastWavBlob = null;
+
+    // Initialize on load
+    async function initialize() {
+      const statusEl = document.getElementById('init-status');
+
+      try {
+        // Check if MBROLA module is available
+        if (typeof createMbrolaModule === 'undefined') {
+          throw new Error('MBROLA WASM not loaded. Run build.sh first to compile mbrola.js');
+        }
+
+        poeta = new PoetaBrowser();
+
+        statusEl.textContent = 'Loading voice file and scansions dictionary...';
+
+        // Initialize with voice and scansions
+        // Note: Paths need to be adjusted based on your server setup
+        await poeta.init({
+          voiceUrl: '../i',  // Italian MBROLA voice
+          scansionsUrl: '../scansions.json'
+        });
+
+        statusEl.className = 'status success';
+        statusEl.textContent = 'Ready! Enter Latin text and click "Speak" to synthesize.';
+
+        document.getElementById('speak-btn').disabled = false;
+        document.getElementById('download-btn').disabled = false;
+
+      } catch (error) {
+        console.error('Initialization failed:', error);
+        statusEl.className = 'status error';
+        statusEl.innerHTML = `
+          <strong>Initialization failed:</strong> ${error.message}<br><br>
+          <small>Make sure you have:
+          <ul>
+            <li>Run <code>./build.sh</code> to compile MBROLA to WASM</li>
+            <li>Created <code>scansions.json</code> from the SQLite database</li>
+            <li>Serving files from a web server (not file://)</li>
+          </ul></small>
+        `;
+      }
+    }
+
+    // Load example
+    function loadExample(name) {
+      const example = EXAMPLES[name];
+      if (example) {
+        document.getElementById('text').value = example.text;
+        document.getElementById('meter').value = example.meter;
+        updateCustomMeterVisibility();
+      }
+    }
+
+    // Get current meter
+    function getMeter() {
+      const meterSelect = document.getElementById('meter');
+      if (meterSelect.value === 'custom') {
+        return document.getElementById('custom-meter').value || 'a';
+      }
+      return meterSelect.value;
+    }
+
+    // Update custom meter field visibility
+    function updateCustomMeterVisibility() {
+      const meterSelect = document.getElementById('meter');
+      const customContainer = document.getElementById('custom-meter-container');
+      customContainer.style.display = meterSelect.value === 'custom' ? 'block' : 'none';
+    }
+
+    document.getElementById('meter').addEventListener('change', updateCustomMeterVisibility);
+
+    // Synthesize and play
+    async function synthesizeAndPlay() {
+      const text = document.getElementById('text').value;
+      const meter = getMeter();
+      const statusEl = document.getElementById('synthesis-status');
+      const audioEl = document.getElementById('audio-player');
+
+      if (!poeta || !poeta.initialized) {
+        statusEl.className = 'status error';
+        statusEl.textContent = 'System not initialized';
+        statusEl.style.display = 'block';
+        return;
+      }
+
+      try {
+        statusEl.className = 'status loading';
+        statusEl.textContent = 'Synthesizing...';
+        statusEl.style.display = 'block';
+
+        const { wav, sampleRate } = await poeta.synthesize(text, meter);
+        lastWavBlob = wav;
+
+        // Create audio URL and play
+        const audioUrl = URL.createObjectURL(wav);
+        audioEl.src = audioUrl;
+        audioEl.style.display = 'block';
+        audioEl.play();
+
+        statusEl.className = 'status success';
+        statusEl.textContent = `Synthesis complete! Sample rate: ${sampleRate} Hz`;
+
+      } catch (error) {
+        console.error('Synthesis failed:', error);
+        statusEl.className = 'status error';
+        statusEl.textContent = `Synthesis failed: ${error.message}`;
+      }
+    }
+
+    // Download WAV
+    function downloadWav() {
+      if (!lastWavBlob) {
+        alert('No audio synthesized yet. Click "Speak" first.');
+        return;
+      }
+
+      const url = URL.createObjectURL(lastWavBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'latin-speech.wav';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Show .pho output
+    function showPho() {
+      const text = document.getElementById('text').value;
+      const meter = getMeter();
+      const container = document.getElementById('pho-container');
+      const output = document.getElementById('pho-output');
+
+      try {
+        const pho = poeta ? poeta.textToPho(text, meter) : synthesize(text, meter);
+        output.textContent = pho;
+        container.style.display = 'block';
+      } catch (error) {
+        output.textContent = `Error: ${error.message}`;
+        container.style.display = 'block';
+      }
+    }
+
+    // Start initialization when page loads
+    window.addEventListener('load', initialize);
+  </script>
+</body>
+</html>

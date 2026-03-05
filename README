@@ -1,5 +1,40 @@
-Flights of fancy in my younger and more vulnerable days: a few hundred lines of text-to-phoneme synthesis via a hundred lines of regexp substitutions.
+This is an implementation of text-to-phoneme synthesis via a hundred lines of regexp substitutions.
 
-Modifications since my bachelor's thesis:
+Newer pieces:
 * Scansion of any meter (master's work)
 * Log-time word lemmatization scansion lookup, temp file cleanup (sqlite3 vs flat file)
+
+All of the original pieces are written in AWK [sic] and are glued together with shell scripts in the synth.rb file with cryptic names.
+
+Specifically:
+
+1) amp.awk - add at-signs for line separators and # for word separators?
+2) merging potential scansions (from sqlite!) of words
+3) unamp.awk - opposite of amp.awk, just to make sure that merging is okay? (this is probably a kludge)
+4) postamp.awk - taking out some debug information from merging scansions???
+5) nudiv.awk - dividing lines into syllables (0 is short, 8 is long, 4 is anceps)
+6) scansion.rb - takes a metrical specification of "l" (long), "r" (long that can resolve into two shorts), "s" (short), and "a" (anceps) and finds a possible match of the scansion to the syllables
+    nb: this is written in Ruby 1.8 and uses weird old list manipulation methods that are probably part of the standard library by now
+    the sqlite database is super tiny and is <5mb compressed, this might make sense as a simple dictionary as json file?
+7) inc.awk - this deals with pitch accent information: high pitch is on a long penultimate syllable, on an antepenultimate syllable with a short ultimate, and on the first syllable of a two syllable word
+
+This creates accentuated scanned intermediate format "text", which can get formatted into html entities (via htmfmt.awk) or into phonemes, as below.
+
+8) d2m.awk - this converts a diphthong vowel into one vowel segment somehow???
+9) spkfmt.awk - removes foot separators and other punctuation and turns punctuation into high pitch into super-high (like a breath, that inflates the lungs so the pitch rises)
+10) spk.awk - formats phonemes into the output that mbrola is expecting
+11) phostrip - strips out semicolons which mean something???
+12) phobunch (phobunc) - takes out newlines which mbrola doesn't like
+13) phofix - fixes nonexistent diphone pairs
+
+This is the .pho file for mbrola.
+
+
+This is a super complicated project because it is inscrutable AWK code that uses piles and piles of regular expression substitutions to do text-to-phoneme synthesis.
+
+TODO phase 1:
+[] take every sample text in sample-texts/ and convert it to .pho using synth.rb, in the style of how app.rb does it (try some samples first before doing every one)
+   [] ensure that the meter of the 2*.txt files is 'lrlrlrlrlrla' (dactylic hexameter with anceps at the end), and the meter of the 1*.txt files is 'a'
+[] translate the AWK / Ruby / Shell pipeline into clearly written Javascript, ensuring that every output matches the original exactly
+   (divide the work into pre-scansion (1-5), scansion (6), accentuation (7), and phoneme production (8-13))
+    [] document the format of the inputs and outputs for each stage, and write tests

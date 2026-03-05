@@ -366,29 +366,40 @@ function getVowels(text) {
 }
 
 /**
- * Apply scansion to match meter
- * Replace 4 (anceps) with the appropriate value based on meter
+ * Apply scansion to match meter using captured groups from regex match
+ * Each captured group corresponds to one meter position
+ * For 'r' positions, the group can be 1 char (long) or 2 chars (two shorts)
  */
-function fix4s(vowels, meterSpec) {
-  const syllTypes = {
+function fix4sFromCaptures(captures, meterSpec) {
+  // Default replacements for 4 (anceps) based on meter type
+  const syllDefaults = {
     l: '8',  // long -> replace 4 with 8
     s: '0',  // short -> replace 4 with 0
     a: '0',  // anceps -> default to 0
-    r: '8'   // resolvable -> default to 8
+    r: '8'   // resolvable -> default to 8 (but if resolved as two shorts, each defaults to 0)
   };
 
   const result = [];
-  let meterChars = meterSpec.split('');
+  const meterChars = meterSpec.split('');
 
-  for (let i = 0; i < vowels.length && i < meterChars.length; i++) {
-    const orig = vowels[i];
-    const target = syllTypes[meterChars[i]] || '0';
+  for (let i = 0; i < captures.length && i < meterChars.length; i++) {
+    const captured = captures[i];  // Can be 1 or 2 chars for 'r'
+    const meterType = meterChars[i];
+    const defaultVal = syllDefaults[meterType] || '0';
 
-    if (orig === '4') {
-      result.push(target);
-    } else {
-      // Replace 4 with 0 in non-anceps positions
-      result.push(orig === '4' ? '0' : orig);
+    // Process each character in the captured group
+    for (const ch of captured) {
+      if (ch === '4') {
+        // If this is an 'r' resolved as two shorts, default to 0 for each
+        if (meterType === 'r' && captured.length === 2) {
+          result.push('0');
+        } else {
+          result.push(defaultVal);
+        }
+      } else {
+        // Keep non-anceps values, but convert any remaining 4s to 0
+        result.push(ch === '4' ? '0' : ch);
+      }
     }
   }
 
@@ -415,8 +426,11 @@ function scansion(text, meterSpec) {
   const match = vowels.match(meterPattern);
 
   if (match) {
-    // Apply the fixed vowels
-    let fixed = fix4s(vowels, meterSpec) + '0'.repeat(20); // padding
+    // Get captured groups (skip first element which is the full match)
+    const captures = match.slice(1);
+
+    // Apply fix4s using captured groups (handles resolvable positions correctly)
+    let fixed = fix4sFromCaptures(captures, meterSpec) + '0'.repeat(20); // padding
 
     // Replace vowels in text
     s = s.replace(/[0468](?=[^0468]*\/)/g, () => {
@@ -542,6 +556,15 @@ function spkfmt(text) {
 }
 
 /**
+ * Format number like AWK's default OFMT (%.6g)
+ * 6 significant digits, trailing zeros removed
+ */
+function awkFormat(n) {
+  // AWK's %.6g format: 6 significant digits
+  return Number(n.toPrecision(6)).toString();
+}
+
+/**
  * spk.awk - Convert to MBROLA phoneme format
  *
  * Input: Character-separated text
@@ -600,7 +623,7 @@ function spk(text) {
 
     // Punctuation pause
     if (/[,:;.]/.test(token)) {
-      lines.push(`_ ${pause[token]} 0 ${lowest} 50 ${hitone}`);
+      lines.push(`_ ${pause[token]} 0 ${lowest} 50 ${awkFormat(hitone)}`);
       NR = 0;  // Reset like AWK's NR = 0
 
       if (/[,:;]/.test(token)) {
@@ -632,7 +655,7 @@ function spk(text) {
       let mbrolapitch = '';
 
       if (lnhs === 'L') {
-        mbrolapitch = '50 ' + lotone;
+        mbrolapitch = '50 ' + awkFormat(lotone);
         lotone -= lostep;
         if (lotone < lowest) {
           lotone = lowest;
@@ -640,7 +663,7 @@ function spk(text) {
       }
 
       if (lnhs === 'H') {
-        mbrolapitch = '50 ' + hitone;
+        mbrolapitch = '50 ' + awkFormat(hitone);
         hitone -= histep;
         if (hitone < lotone) {
           hitone = lotone;
@@ -648,7 +671,7 @@ function spk(text) {
       }
 
       if (lnhs === 'S') {
-        mbrolapitch = '99 ' + (0.5 * (hitone + highest));
+        mbrolapitch = '99 ' + awkFormat(0.5 * (hitone + highest));
       }
 
       lines.push('');
