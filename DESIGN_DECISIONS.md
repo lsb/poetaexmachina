@@ -44,18 +44,23 @@ Keep Caddy, but point it at the static files instead of the Ruby app. Use Caddy'
 
 ## Static File Structure
 
-The served directory contains:
+Everything served lives in `clientside/`. Point your web server at this directory.
 
 ```
-index.html              # Main app (form + synthesis + audio playback)
-synthesis.js            # Latin text -> MBROLA .pho pipeline
-mbrola.js + mbrola.wasm # MBROLA speech synthesizer (Emscripten)
-mbrola-wrapper.js       # JS API for MBROLA WASM
-poeta-browser.js        # Integration layer
-scansions.json          # Word scansion dictionary (~7MB)
-i                       # MBROLA Italian voice file (~6MB)
-synth/index.html        # Redirect stub for old /synth?... URLs
-public/                 # Legacy static assets (about, images, fonts)
+clientside/
+  index.html              # Main app (form + synthesis + audio playback)
+  synthesis.js            # Latin text -> MBROLA .pho pipeline
+  mbrola.js + mbrola.wasm # MBROLA speech synthesizer (Emscripten)
+  mbrola-wrapper.js       # JS API for MBROLA WASM
+  poeta-browser.js        # Integration layer
+  scansions.json          # Word scansion dictionary (~7MB)
+  i                       # MBROLA Italian voice file (~6MB)
+  synth/index.html        # Redirect stub for old /synth?... URLs
+  mp3/index.html          # Redirect stub for old /mp3?... URLs
+  about.html              # About page (from original site)
+  font/                   # Ancient Greek font pages
+  aac/                    # Avernus at Cumae photo essay
+  *.gif, *.pdf            # Legacy static assets
 ```
 
 ## /mp3 Compatibility
@@ -73,7 +78,7 @@ If keeping Caddy:
 
 ```caddy
 poetaexmachina.com {
-    root * /srv/poetaexmachina
+    root * /srv/poetaexmachina/clientside
     file_server
 
     # Rewrite old dynamic routes to the SPA

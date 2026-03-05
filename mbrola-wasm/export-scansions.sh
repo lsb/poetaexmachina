@@ -8,7 +8,7 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEFAULT_DB="${SCRIPT_DIR}/../merged-scansions.db"
-DEFAULT_OUTPUT="${SCRIPT_DIR}/../scansions.json"
+DEFAULT_OUTPUT="${SCRIPT_DIR}/../clientside/scansions.json"
 
 INPUT_DB="${1:-$DEFAULT_DB}"
 OUTPUT_JSON="${2:-$DEFAULT_OUTPUT}"

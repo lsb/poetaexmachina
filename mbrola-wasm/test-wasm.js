@@ -10,7 +10,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Load the Emscripten-generated module
-const createMbrolaModule = require('../mbrola.js');
+const createMbrolaModule = require('../clientside/mbrola.js');
 
 async function test() {
   console.log('Loading MBROLA WASM module...');
@@ -37,7 +37,7 @@ async function test() {
   console.log(`MBROLA version: ${version}`);
 
   // Load voice file
-  const voicePath = path.join(__dirname, '..', 'i');
+  const voicePath = path.join(__dirname, '..', 'clientside', 'i');
   if (!fs.existsSync(voicePath)) {
     console.error(`Voice file not found: ${voicePath}`);
     console.error('Make sure the Italian MBROLA voice file "i" is in the parent directory');

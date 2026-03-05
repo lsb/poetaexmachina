@@ -10,10 +10,10 @@ const fs = require('fs');
 const path = require('path');
 
 // Load synthesis.js
-const synthesis = require('../synthesis.js');
+const synthesis = require('../clientside/synthesis.js');
 
 // Load scansions dictionary
-const scansionsPath = path.join(__dirname, '..', 'scansions.json');
+const scansionsPath = path.join(__dirname, '..', 'clientside', 'scansions.json');
 if (fs.existsSync(scansionsPath)) {
   const scansions = JSON.parse(fs.readFileSync(scansionsPath, 'utf8'));
   synthesis.loadScansions(scansions);
@@ -24,7 +24,7 @@ if (fs.existsSync(scansionsPath)) {
 }
 
 // Load MBROLA WASM
-const createMbrolaModule = require('../mbrola.js');
+const createMbrolaModule = require('../clientside/mbrola.js');
 
 async function synthesizeLatinToWav(text, meter, outputFile) {
   console.log(`\nInput text: "${text}"`);
@@ -50,7 +50,7 @@ async function synthesizeLatinToWav(text, meter, outputFile) {
   const setNoError_MBR = Module.cwrap('setNoError_MBR', null, ['number']);
 
   // Load voice
-  const voicePath = path.join(__dirname, '..', 'i');
+  const voicePath = path.join(__dirname, '..', 'clientside', 'i');
   const voiceData = fs.readFileSync(voicePath);
   Module.FS.writeFile('/voice', voiceData);
 

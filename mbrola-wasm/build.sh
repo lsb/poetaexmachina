@@ -17,7 +17,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 MBROLA_SRC="${SCRIPT_DIR}/MBROLA"
-OUTPUT_DIR="${PROJECT_ROOT}"
+OUTPUT_DIR="${PROJECT_ROOT}/clientside"
 
 # Clone MBROLA if not present
 if [ ! -d "$MBROLA_SRC" ]; then
@@ -54,7 +54,7 @@ docker run --rm -v "${PROJECT_ROOT}:/project" -w /project/mbrola-wasm/MBROLA ems
     -s FILESYSTEM=1 \
     -s FORCE_FILESYSTEM=1 \
     -O2 \
-    -o /project/mbrola.js
+    -o /project/clientside/mbrola.js
 
 echo ""
 echo "Build complete!"
