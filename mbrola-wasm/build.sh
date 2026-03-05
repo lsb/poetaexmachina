@@ -15,8 +15,9 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 MBROLA_SRC="${SCRIPT_DIR}/MBROLA"
-OUTPUT_DIR="${SCRIPT_DIR}"
+OUTPUT_DIR="${PROJECT_ROOT}"
 
 # Clone MBROLA if not present
 if [ ! -d "$MBROLA_SRC" ]; then
@@ -29,7 +30,7 @@ echo "Compiling MBROLA to WebAssembly using Docker..."
 # Run emcc via Docker
 # Mount the mbrola-wasm directory to /src in the container
 # Work from inside the MBROLA directory so includes resolve correctly
-docker run --rm -v "${SCRIPT_DIR}:/src" -w /src/MBROLA emscripten/emsdk:latest \
+docker run --rm -v "${PROJECT_ROOT}:/project" -w /project/mbrola-wasm/MBROLA emscripten/emsdk:latest \
     emcc \
     -DTARGET_OS_LINUX \
     -DLITTLE_ENDIAN \
@@ -53,7 +54,7 @@ docker run --rm -v "${SCRIPT_DIR}:/src" -w /src/MBROLA emscripten/emsdk:latest \
     -s FILESYSTEM=1 \
     -s FORCE_FILESYSTEM=1 \
     -O2 \
-    -o /src/mbrola.js
+    -o /project/mbrola.js
 
 echo ""
 echo "Build complete!"

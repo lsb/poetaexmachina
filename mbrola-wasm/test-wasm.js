@@ -10,7 +10,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Load the Emscripten-generated module
-const createMbrolaModule = require('./mbrola.js');
+const createMbrolaModule = require('../mbrola.js');
 
 async function test() {
   console.log('Loading MBROLA WASM module...');

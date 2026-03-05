@@ -1,110 +1,42 @@
 # MBROLA WebAssembly Build
 
-This directory contains the tooling to compile MBROLA speech synthesizer to WebAssembly for browser use.
+This directory contains the build tooling for compiling MBROLA to WebAssembly. The compiled output (`mbrola.js`, `mbrola.wasm`) is placed in the project root alongside the other app files.
 
 ## Prerequisites
 
-1. **Emscripten SDK** - LLVM-to-WebAssembly compiler
-   ```bash
-   git clone https://github.com/emscripten-core/emsdk.git
-   cd emsdk
-   ./emsdk install latest
-   ./emsdk activate latest
-   source emsdk_env.sh
-   ```
-
+1. **Docker** - Used to run the Emscripten compiler
 2. **Node.js** - For the scansions export script
+3. **SQLite3** - For exporting the scansions database
 
 ## Build Steps
 
 ### 1. Compile MBROLA to WASM
 
 ```bash
-cd mbrola-wasm
-./build.sh
+./mbrola-wasm/build.sh
 ```
 
-This will:
-- Clone MBROLA source from GitHub (if not present)
-- Compile it to `mbrola.js` and `mbrola.wasm`
+This clones MBROLA source (if needed) and compiles it to `mbrola.js` and `mbrola.wasm` in the project root.
 
 ### 2. Export Scansions Dictionary
 
 ```bash
-./export-scansions.sh
+./mbrola-wasm/export-scansions.sh
 ```
 
-This creates `scansions.json` from the SQLite database.
+Creates `scansions.json` in the project root from the SQLite database.
 
-### 3. Serve Files
-
-Run a local web server from the project root:
+### 3. Serve and Open
 
 ```bash
-# Python 3
-python3 -m http.server 8000
-
-# Node.js
-npx serve .
+python3 -m http.server -b 127.0.0.1 8000
+open http://localhost:8000
 ```
-
-### 4. Open Demo
-
-Navigate to `http://localhost:8000/mbrola-wasm/demo.html`
 
 ## Files
 
-- `build.sh` - Emscripten build script for MBROLA
-- `mbrola-wrapper.js` - JavaScript API wrapper for MBROLA WASM
-- `poeta-browser.js` - Integration with synthesis.js pipeline
-- `demo.html` - Browser demo page
+- `build.sh` - Emscripten build script (outputs to project root)
 - `export-scansions.sh` - Export scansions DB to JSON
-
-## Generated Files (after build)
-
-- `mbrola.js` - Emscripten glue code
-- `mbrola.wasm` - WebAssembly binary
-- `MBROLA/` - Cloned MBROLA source
-
-## API Usage
-
-```javascript
-// Load required scripts
-// <script src="synthesis.js"></script>
-// <script src="mbrola-wasm/mbrola.js"></script>
-// <script src="mbrola-wasm/mbrola-wrapper.js"></script>
-// <script src="mbrola-wasm/poeta-browser.js"></script>
-
-const poeta = new PoetaBrowser();
-
-// Initialize with voice file and scansions dictionary
-await poeta.init({
-  voiceUrl: '/i',              // MBROLA Italian voice
-  scansionsUrl: '/scansions.json'
-});
-
-// Synthesize and play
-await poeta.speak('Arma virumque cano', 'lrlrlrlrlrla');
-
-// Or get audio data
-const { wav, pcm, sampleRate } = await poeta.synthesize(text, meter);
-
-// Download as WAV
-const url = URL.createObjectURL(wav);
-```
-
-## Meter Patterns
-
-- `l` = long syllable
-- `s` = short syllable
-- `a` = anceps (either long or short)
-- `r` = resolvable (long or two shorts)
-
-Common patterns:
-- Dactylic Hexameter: `lrlrlrlrlrla`
-- Hendecasyllable: `aalsslalass`
-- Sapphic: `laalaasslax`
-
-## License
-
-MBROLA is licensed under GNU Affero General Public License v3.
+- `MBROLA/` - Cloned MBROLA C source code
+- `test-wasm.js` - Node.js test for WASM module
+- `test-full-pipeline.js` - Node.js test for full Latin-to-audio pipeline

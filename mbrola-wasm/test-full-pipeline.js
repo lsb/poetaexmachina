@@ -24,7 +24,7 @@ if (fs.existsSync(scansionsPath)) {
 }
 
 // Load MBROLA WASM
-const createMbrolaModule = require('./mbrola.js');
+const createMbrolaModule = require('../mbrola.js');
 
 async function synthesizeLatinToWav(text, meter, outputFile) {
   console.log(`\nInput text: "${text}"`);
