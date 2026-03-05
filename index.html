@@ -390,7 +390,36 @@ ad mea perpetuum deducite tempora carmen.`,
       }
     }
 
-    window.addEventListener('load', initialize);
+    // Support old /synth?text=...&meter=... URLs redirected via hash
+    function loadFromHash() {
+      var hash = window.location.hash.slice(1);
+      if (!hash) return;
+      var params = new URLSearchParams(hash);
+      var text = params.get('text');
+      var meter = params.get('meter');
+      if (text) document.getElementById('text').value = text;
+      if (meter) {
+        var meterSelect = document.getElementById('meter');
+        var found = false;
+        for (var i = 0; i < meterSelect.options.length; i++) {
+          if (meterSelect.options[i].value === meter) {
+            meterSelect.value = meter;
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          meterSelect.value = 'custom';
+          document.getElementById('custom-meter').value = meter;
+          updateCustomMeterVisibility();
+        }
+      }
+    }
+
+    window.addEventListener('load', function() {
+      loadFromHash();
+      initialize();
+    });
   </script>
 </body>
 </html>

@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html><head>
+<title>Redirecting...</title>
+<script>
+// Redirect old /synth?text=...&meter=... URLs to the new SPA
+var params = window.location.search;
+window.location.replace('/' + (params ? '#' + params.slice(1) : ''));
+</script>
+</head><body><p>Redirecting to <a href="/">poeta ex machina</a>...</p></body></html>
