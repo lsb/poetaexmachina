@@ -138,14 +138,11 @@
 
   <div id="error-status" class="error-status" style="display: none;"></div>
 
-  <textarea id="text" placeholder="Enter Latin text here...">Arma virumque cano, Troiae qui primus ab oris
-Italiam, fato profugus, Laviniaque venit
-litora, multum ille et terris iactatus et alto
-vi superum saevae memorem Iunonis ob iram</textarea>
+  <textarea id="text" placeholder="Enter Latin text here..."></textarea>
 
   <div style="margin-bottom: 8px;">
     <span class="hint">Examples:</span>
-    <button class="example-btn" onclick="loadExample('aeneid')">Aeneid I.1-4</button>
+    <button class="example-btn" onclick="loadExample('aeneid')">Aeneid I.1-7</button>
     <button class="example-btn" onclick="loadExample('catullus')">Catullus 5</button>
     <button class="example-btn" onclick="loadExample('horace')">Horace Odes 1.1</button>
     <button class="example-btn" onclick="loadExample('ovid')">Ovid Met. 1.1-4</button>
@@ -189,7 +186,7 @@ vi superum saevae memorem Iunonis ob iram</textarea>
     const CIRCUMFLEX = {a:'\u00e2',e:'\u00ea',i:'\u00ee',o:'\u00f4',u:'\u00fb'};
     const EXAMPLES = {
       aeneid: {
-        text: 'Arma virumque cano, Troiae qui primus ab oris\nItaliam, fato profugus, Laviniaque venit\nlitora, multum ille et terris iactatus et alto\nvi superum saevae memorem Iunonis ob iram',
+        text: 'Arma virumque cano, Troiae qui primus ab oris\nItaliam, fato profugus, Laviniaque venit\nlitora, multum ille et terris iactatus et alto\nvi superum saevae memorem Iunonis ob iram;\nmulta quoque et bello passus, dum conderet urbem,\ninferretque deos Latio, genus unde Latinum,\nAlbanique patres, atque altae moenia Romae.',
         meter: 'lrlrlrlrlrla'
       },
       catullus: {
@@ -211,6 +208,7 @@ vi superum saevae memorem Iunonis ob iram</textarea>
     let lastSampleRate = null;
     let lastWavBlob = null;
     let updateTimer = null;
+    let demoTimer = null;
 
     // --- Macronization ---
 
@@ -328,12 +326,14 @@ vi superum saevae memorem Iunonis ob iram</textarea>
     // --- Meter ---
 
     function onPresetChange() {
+      stopDemo();
       var sel = document.getElementById('meter-preset');
       document.getElementById('meter').value = sel.value;
       doUpdate();
     }
 
     function onMeterInput() {
+      stopDemo();
       var val = document.getElementById('meter').value;
       var sel = document.getElementById('meter-preset');
       var matched = false;
@@ -382,6 +382,7 @@ vi superum saevae memorem Iunonis ob iram</textarea>
     // --- Examples ---
 
     function loadExample(name) {
+      stopDemo();
       var ex = EXAMPLES[name];
       if (!ex) return;
       document.getElementById('text').value = ex.text;
@@ -417,7 +418,7 @@ vi superum saevae memorem Iunonis ob iram</textarea>
         await poeta.init({ voiceUrl: 'i', scansionsUrl: 'scansions.json' });
         document.getElementById('play-btn').disabled = false;
         document.getElementById('download-btn').disabled = false;
-        doUpdate();
+        startDemo();
       } catch (error) {
         console.error('Init failed:', error);
         errEl.textContent = 'Initialization failed: ' + error.message;
@@ -425,9 +426,36 @@ vi superum saevae memorem Iunonis ob iram</textarea>
       }
     }
 
+    // --- Demo: reveal lines one at a time ---
+
+    function startDemo() {
+      var lines = EXAMPLES.aeneid.text.split('\n');
+      var meter = EXAMPLES.aeneid.meter;
+      document.getElementById('meter').value = meter;
+      var sel = document.getElementById('meter-preset');
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === meter) { sel.selectedIndex = i; break; }
+      }
+      var textEl = document.getElementById('text');
+      textEl.value = '';
+      var lineIdx = 0;
+      function addLine() {
+        if (lineIdx >= lines.length) { demoTimer = null; return; }
+        textEl.value = (textEl.value ? textEl.value + '\n' : '') + lines[lineIdx];
+        lineIdx++;
+        doUpdate();
+        demoTimer = setTimeout(addLine, 1000);
+      }
+      addLine();
+    }
+
+    function stopDemo() {
+      if (demoTimer) { clearTimeout(demoTimer); demoTimer = null; }
+    }
+
     // --- Bind events ---
 
-    document.getElementById('text').addEventListener('input', scheduleUpdate);
+    document.getElementById('text').addEventListener('input', function() { stopDemo(); scheduleUpdate(); });
     window.addEventListener('resize', resizeCanvas);
 
     window.addEventListener('load', function() {
