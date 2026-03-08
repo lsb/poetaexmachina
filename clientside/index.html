@@ -330,13 +330,12 @@ vi superum saevae memorem Iunonis ob iram</textarea>
     function onPresetChange() {
       var sel = document.getElementById('meter-preset');
       document.getElementById('meter').value = sel.value;
-      scheduleUpdate();
+      doUpdate();
     }
 
     function onMeterInput() {
       var val = document.getElementById('meter').value;
       var sel = document.getElementById('meter-preset');
-      // sync dropdown if it matches a preset
       var matched = false;
       for (var i = 0; i < sel.options.length; i++) {
         if (sel.options[i].value === val) {
@@ -346,7 +345,7 @@ vi superum saevae memorem Iunonis ob iram</textarea>
         }
       }
       if (!matched) sel.selectedIndex = -1;
-      scheduleUpdate();
+      doUpdate();
     }
 
     // --- Playback ---
@@ -387,12 +386,11 @@ vi superum saevae memorem Iunonis ob iram</textarea>
       if (!ex) return;
       document.getElementById('text').value = ex.text;
       document.getElementById('meter').value = ex.meter;
-      // sync dropdown
       var sel = document.getElementById('meter-preset');
       for (var i = 0; i < sel.options.length; i++) {
         if (sel.options[i].value === ex.meter) { sel.selectedIndex = i; break; }
       }
-      scheduleUpdate();
+      doUpdate();
     }
 
     // --- Hash URL support ---
@@ -430,7 +428,6 @@ vi superum saevae memorem Iunonis ob iram</textarea>
     // --- Bind events ---
 
     document.getElementById('text').addEventListener('input', scheduleUpdate);
-    document.getElementById('meter').addEventListener('input', scheduleUpdate);
     window.addEventListener('resize', resizeCanvas);
 
     window.addEventListener('load', function() {
