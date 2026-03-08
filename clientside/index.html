@@ -5,19 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>poeta ex machina / latin poetry text-to-speech</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       font-family: verdana, helvetica, arial, sans-serif;
       max-width: 700px;
       margin: 0 auto;
       padding: 20px;
-      background: #ffffff;
+      background: #fff;
       color: #000;
     }
     h1 {
-      color: #000;
       text-align: center;
       font-size: 20px;
       font-weight: normal;
@@ -27,85 +24,99 @@
       text-align: center;
       color: #555;
       font-size: 13px;
-      margin-bottom: 24px;
-    }
-    .card {
-      background: #99ccff;
-      border-radius: 4px;
-      padding: 16px 20px;
-      margin-bottom: 16px;
-    }
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 12px;
-      color: #000;
+      margin-bottom: 20px;
     }
     textarea {
       width: 100%;
       min-height: 140px;
       padding: 10px;
-      border: 1px solid #6699cc;
+      border: 1px solid #b0c8e8;
       border-radius: 3px;
       font-family: 'courier new', courier, monospace;
       font-size: 10pt;
       background: #ddeeff;
       color: #000;
       resize: vertical;
+      margin-bottom: 4px;
     }
-    textarea:focus {
-      outline: none;
-      border-color: #336699;
-    }
-    select, input[type="text"] {
-      padding: 8px;
-      border: 1px solid #6699cc;
+    textarea:focus { outline: none; border-color: #6699cc; }
+    input[type="text"] {
+      padding: 6px 8px;
+      border: 1px solid #b0c8e8;
       border-radius: 3px;
-      font-size: 12px;
+      font-size: 10pt;
       background: #ddeeff;
       color: #000;
       font-family: 'courier new', courier, monospace;
     }
     select {
-      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid #b0c8e8;
+      border-radius: 3px;
+      font-size: 12px;
+      background: #ddeeff;
+      color: #000;
     }
     button {
       background: #6699cc;
       color: #fff;
       border: none;
-      padding: 8px 20px;
+      padding: 6px 16px;
       border-radius: 3px;
-      font-size: 13px;
+      font-size: 12px;
       cursor: pointer;
-      margin-right: 8px;
-      margin-top: 8px;
       font-family: verdana, helvetica, arial, sans-serif;
     }
-    button:hover {
-      background: #5588bb;
+    button:hover { background: #5588bb; }
+    button:disabled { background: #bbb; cursor: not-allowed; }
+    .example-btn {
+      background: #88aacc;
+      font-size: 11px;
+      padding: 3px 8px;
+      margin: 1px;
     }
-    button:disabled {
-      background: #aaa;
-      cursor: not-allowed;
+    .example-btn:hover { background: #7799bb; }
+    .meter-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
     }
-    .status {
-      padding: 12px;
+    .meter-row select { flex-shrink: 0; }
+    .meter-row input[type="text"] { flex: 1; }
+    #scansion-display {
+      font-family: 'Times New Roman', 'DejaVu Serif', serif;
+      font-size: 16px;
+      line-height: 1.6;
+      padding: 10px 0;
+      min-height: 28px;
+      white-space: pre-wrap;
+    }
+    #waveform-container {
+      margin: 8px 0;
+    }
+    #waveform {
+      width: 100%;
+      height: 64px;
+      display: block;
+      cursor: pointer;
+    }
+    .error-status {
+      padding: 10px;
       border-radius: 3px;
-      margin-top: 12px;
       font-size: 12px;
-    }
-    .status.loading {
-      background: #ddeeff;
-      border-left: 4px solid #6699cc;
-    }
-    .status.success {
-      background: #ddffdd;
-      border-left: 4px solid #66aa66;
-    }
-    .status.error {
       background: #ffdddd;
       border-left: 4px solid #cc6666;
+      margin-bottom: 12px;
     }
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    audio { margin-top: 8px; width: 100%; }
+    a { color: #808080; }
     .pho-output {
       font-family: 'courier new', courier, monospace;
       font-size: 11px;
@@ -115,99 +126,58 @@
       background: #eef4ff;
       padding: 10px;
       border-radius: 3px;
-      border: 1px solid #6699cc;
-      margin-top: 10px;
-    }
-    .row {
-      display: flex;
-      gap: 12px;
-    }
-    .row > div {
-      flex: 1;
-    }
-    .examples {
+      border: 1px solid #b0c8e8;
       margin-top: 8px;
     }
-    .example-btn {
-      background: #5588bb;
-      font-size: 11px;
-      padding: 4px 10px;
-      margin: 2px;
-    }
-    .example-btn:hover {
-      background: #4477aa;
-    }
-    audio {
-      width: 100%;
-      margin-top: 12px;
-    }
-    a {
-      color: #808080;
-    }
+    .hint { font-size: 10px; color: #888; }
   </style>
 </head>
 <body>
   <h1>poeta ex machina.</h1>
   <p class="subtitle">listen to latin poetry chanted.<br>synthesized in the browser, from any text, any meter.</p>
 
-  <div class="card">
-    <div id="init-status" class="status loading">
-      Initializing... Please wait while resources load.
-    </div>
-  </div>
+  <div id="error-status" class="error-status" style="display: none;"></div>
 
-  <div class="card">
-    <label for="text">Latin Text:</label>
-    <textarea id="text" placeholder="Enter Latin text here...">Arma virumque cano, Troiae qui primus ab oris
+  <textarea id="text" placeholder="Enter Latin text here...">Arma virumque cano, Troiae qui primus ab oris
 Italiam, fato profugus, Laviniaque venit
 litora, multum ille et terris iactatus et alto
 vi superum saevae memorem Iunonis ob iram</textarea>
 
-    <div class="examples">
-      <span style="color: #336; font-size: 11px;">Examples:</span>
-      <button class="example-btn" onclick="loadExample('aeneid')">Aeneid I.1-4</button>
-      <button class="example-btn" onclick="loadExample('catullus')">Catullus 5</button>
-      <button class="example-btn" onclick="loadExample('horace')">Horace Odes 1.1</button>
-      <button class="example-btn" onclick="loadExample('ovid')">Ovid Met. 1.1-4</button>
-    </div>
+  <div style="margin-bottom: 8px;">
+    <span class="hint">Examples:</span>
+    <button class="example-btn" onclick="loadExample('aeneid')">Aeneid I.1-4</button>
+    <button class="example-btn" onclick="loadExample('catullus')">Catullus 5</button>
+    <button class="example-btn" onclick="loadExample('horace')">Horace Odes 1.1</button>
+    <button class="example-btn" onclick="loadExample('ovid')">Ovid Met. 1.1-4</button>
   </div>
 
-  <div class="card">
-    <div class="row">
-      <div>
-        <label for="meter">Meter:</label>
-        <select id="meter">
-          <option value="lrlrlrlrlrla" selected>Dactylic Hexameter</option>
-          <option value="lrlrlalrlrla">Elegiac Pentameter</option>
-          <option value="aalsslalass">Hendecasyllable</option>
-          <option value="laalaasslax">Sapphic</option>
-          <option value="alaalaasla">Alcaic</option>
-          <option value="custom">Custom...</option>
-        </select>
-      </div>
-      <div id="custom-meter-container" style="display: none;">
-        <label for="custom-meter">Custom Meter Pattern:</label>
-        <input type="text" id="custom-meter" placeholder="e.g., lrlrlrlrlrla" value="">
-      </div>
-    </div>
-    <p style="font-size: 11px; color: #336; margin-top: 8px;">
-      l=long, s=short, a=anceps, r=resolvable (long or two shorts)
-    </p>
+  <div class="meter-row">
+    <select id="meter-preset" onchange="onPresetChange()">
+      <option value="lrlrlrlrlrla" selected>Dactylic Hexameter</option>
+      <option value="lrlrlalrlrla">Elegiac Pentameter</option>
+      <option value="aalsslalass">Hendecasyllable</option>
+      <option value="laalaasslax">Sapphic</option>
+      <option value="alaalaasla">Alcaic</option>
+    </select>
+    <input type="text" id="meter" value="lrlrlrlrlrla" oninput="onMeterInput()">
+    <span class="hint">l=long s=short a=anceps r=resolvable</span>
   </div>
 
-  <div class="card">
-    <button id="speak-btn" onclick="synthesizeAndPlay()" disabled>Speak</button>
+  <div id="scansion-display"></div>
+
+  <div id="waveform-container">
+    <canvas id="waveform"></canvas>
+  </div>
+
+  <div class="controls">
+    <button id="play-btn" onclick="playAudio()" disabled>Play</button>
     <button id="download-btn" onclick="downloadWav()" disabled>Download WAV</button>
-    <button onclick="showPho()">Show .pho</button>
-
-    <div id="synthesis-status" class="status" style="display: none;"></div>
-
+    <button onclick="togglePho()">Show .pho</button>
     <audio id="audio-player" controls style="display: none;"></audio>
+  </div>
 
-    <div id="pho-container" style="display: none;">
-      <h4 style="margin: 15px 0 5px 0; font-size: 12px;">Generated .pho:</h4>
-      <div id="pho-output" class="pho-output"></div>
-    </div>
+  <div id="pho-container" style="display: none;">
+    <div id="pho-output" class="pho-output"></div>
   </div>
 
   <script src="synthesis.js"></script>
@@ -216,181 +186,217 @@ vi superum saevae memorem Iunonis ob iram</textarea>
   <script src="poeta-browser.js"></script>
 
   <script>
+    const CIRCUMFLEX = {a:'\u00e2',e:'\u00ea',i:'\u00ee',o:'\u00f4',u:'\u00fb'};
     const EXAMPLES = {
       aeneid: {
-        text: `Arma virumque cano, Troiae qui primus ab oris
-Italiam, fato profugus, Laviniaque venit
-litora, multum ille et terris iactatus et alto
-vi superum saevae memorem Iunonis ob iram`,
+        text: 'Arma virumque cano, Troiae qui primus ab oris\nItaliam, fato profugus, Laviniaque venit\nlitora, multum ille et terris iactatus et alto\nvi superum saevae memorem Iunonis ob iram',
         meter: 'lrlrlrlrlrla'
       },
       catullus: {
-        text: `Vivamus, mea Lesbia, atque amemus,
-rumoresque senum severiorum
-omnes unius aestimemus assis.
-Soles occidere et redire possunt:
-nobis cum semel occidit brevis lux,
-nox est perpetua una dormienda.`,
+        text: 'Vivamus, mea Lesbia, atque amemus,\nrumoresque senum severiorum\nomnes unius aestimemus assis.\nSoles occidere et redire possunt:\nnobis cum semel occidit brevis lux,\nnox est perpetua una dormienda.',
         meter: 'aalsslalass'
       },
       horace: {
-        text: `Maecenas atavis edite regibus,
-o et praesidium et dulce decus meum,
-sunt quos curriculo pulverem Olympicum
-collegisse iuvat metaque fervidis`,
+        text: 'Maecenas atavis edite regibus,\no et praesidium et dulce decus meum,\nsunt quos curriculo pulverem Olympicum\ncollegisse iuvat metaque fervidis',
         meter: 'laalaasslax'
       },
       ovid: {
-        text: `In nova fert animus mutatas dicere formas
-corpora; di, coeptis, nam vos mutastis et illa,
-adspirate meis primaque ab origine mundi
-ad mea perpetuum deducite tempora carmen.`,
+        text: 'In nova fert animus mutatas dicere formas\ncorpora; di, coeptis, nam vos mutastis et illa,\nadspirate meis primaque ab origine mundi\nad mea perpetuum deducite tempora carmen.',
         meter: 'lrlrlrlrlrla'
       }
     };
 
     let poeta = null;
+    let lastPcm = null;
+    let lastSampleRate = null;
     let lastWavBlob = null;
+    let updateTimer = null;
 
-    async function initialize() {
-      const statusEl = document.getElementById('init-status');
+    // --- Macronization ---
 
+    function macronize(text, meter) {
+      if (!scansionsDict) return text;
       try {
-        if (typeof createMbrolaModule === 'undefined') {
-          throw new Error('MBROLA WASM not loaded. Run build.sh first to compile mbrola.js');
+        var lines = text.split('\n');
+        return lines.map(function(line) {
+          if (!line.trim()) return '';
+          var s = preScansion(line);
+          s = scansion(s, meter);
+          // strip syllable markers
+          s = s.replace(/\//g, '');
+          // restore digraphs
+          s = s.replace(/q/g, 'qu');
+          s = s.replace(/dz/g, 'z');
+          s = s.replace(/cs/g, 'x');
+          // diphthongs: ae, oe etc with 8 -> circumflex on first letter
+          s = s.replace(/%([aeiou])([aeiou])8/g, function(_, a, b) {
+            return (CIRCUMFLEX[a] || a) + b;
+          });
+          // long vowels (8) -> circumflex
+          s = s.replace(/%([aeiou])8/g, function(_, v) {
+            return CIRCUMFLEX[v] || v;
+          });
+          // short/positional/anceps (0, 4, 6) -> plain letter
+          s = s.replace(/%([aeiou])[046]/g, '$1');
+          // clean trailing whitespace from scansion()
+          s = s.replace(/\s+$/, '');
+          return s;
+        }).join('\n');
+      } catch (e) {
+        return text.toLowerCase();
+      }
+    }
+
+    // --- Waveform drawing ---
+
+    function drawWaveform(canvas, pcm) {
+      var ctx = canvas.getContext('2d');
+      var w = canvas.width;
+      var h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+      if (!pcm || pcm.length === 0) return;
+      var step = pcm.length / w;
+      ctx.fillStyle = '#6699cc';
+      var mid = h / 2;
+      for (var x = 0; x < w; x++) {
+        var idx = Math.floor(x * step);
+        // find min/max in this bucket
+        var end = Math.min(Math.floor((x + 1) * step), pcm.length);
+        var lo = 0, hi = 0;
+        for (var j = idx; j < end; j++) {
+          if (pcm[j] < lo) lo = pcm[j];
+          if (pcm[j] > hi) hi = pcm[j];
         }
-
-        poeta = new PoetaBrowser();
-
-        statusEl.textContent = 'Loading voice file and scansions dictionary...';
-
-        await poeta.init({
-          voiceUrl: 'i',
-          scansionsUrl: 'scansions.json'
-        });
-
-        statusEl.className = 'status success';
-        statusEl.textContent = 'Ready! Enter Latin text and click "Speak" to synthesize.';
-
-        document.getElementById('speak-btn').disabled = false;
-        document.getElementById('download-btn').disabled = false;
-
-      } catch (error) {
-        console.error('Initialization failed:', error);
-        statusEl.className = 'status error';
-        statusEl.innerHTML = `
-          <strong>Initialization failed:</strong> ${error.message}<br><br>
-          <small>Make sure you have:
-          <ul>
-            <li>Run <code>mbrola-wasm/build.sh</code> to compile MBROLA to WASM</li>
-            <li>Created <code>scansions.json</code> from the SQLite database</li>
-            <li>Serving files from a web server (not file://)</li>
-          </ul></small>
-        `;
+        var yTop = mid - (hi / 32768) * mid;
+        var yBot = mid - (lo / 32768) * mid;
+        var barH = Math.max(yBot - yTop, 1);
+        ctx.fillRect(x, yTop, 1, barH);
       }
     }
 
-    function loadExample(name) {
-      const example = EXAMPLES[name];
-      if (example) {
-        document.getElementById('text').value = example.text;
-        document.getElementById('meter').value = example.meter;
-        updateCustomMeterVisibility();
-      }
+    function resizeCanvas() {
+      var canvas = document.getElementById('waveform');
+      canvas.width = canvas.offsetWidth * (window.devicePixelRatio || 1);
+      canvas.height = 64 * (window.devicePixelRatio || 1);
+      canvas.getContext('2d').scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+      if (lastPcm) drawWaveform(canvas, lastPcm);
     }
 
-    function getMeter() {
-      const meterSelect = document.getElementById('meter');
-      if (meterSelect.value === 'custom') {
-        return document.getElementById('custom-meter').value || 'a';
-      }
-      return meterSelect.value;
+    // --- Live update ---
+
+    function scheduleUpdate() {
+      if (updateTimer) clearTimeout(updateTimer);
+      updateTimer = setTimeout(doUpdate, 120);
     }
 
-    function updateCustomMeterVisibility() {
-      const meterSelect = document.getElementById('meter');
-      const customContainer = document.getElementById('custom-meter-container');
-      customContainer.style.display = meterSelect.value === 'custom' ? 'block' : 'none';
-    }
-
-    document.getElementById('meter').addEventListener('change', updateCustomMeterVisibility);
-
-    async function synthesizeAndPlay() {
-      const text = document.getElementById('text').value;
-      const meter = getMeter();
-      const statusEl = document.getElementById('synthesis-status');
-      const audioEl = document.getElementById('audio-player');
-
-      if (!poeta || !poeta.initialized) {
-        statusEl.className = 'status error';
-        statusEl.textContent = 'System not initialized';
-        statusEl.style.display = 'block';
+    function doUpdate() {
+      var text = document.getElementById('text').value;
+      var meter = document.getElementById('meter').value;
+      if (!text.trim() || !meter.trim()) {
+        document.getElementById('scansion-display').textContent = '';
+        lastPcm = null;
+        drawWaveform(document.getElementById('waveform'), null);
         return;
       }
 
-      try {
-        statusEl.className = 'status loading';
-        statusEl.textContent = 'Synthesizing...';
-        statusEl.style.display = 'block';
+      // macronized scansion
+      document.getElementById('scansion-display').textContent = macronize(text, meter);
 
-        const { wav, sampleRate } = await poeta.synthesize(text, meter);
-        lastWavBlob = wav;
-
-        const audioUrl = URL.createObjectURL(wav);
-        audioEl.src = audioUrl;
-        audioEl.style.display = 'block';
-        audioEl.play();
-
-        statusEl.className = 'status success';
-        statusEl.textContent = `Synthesis complete! Sample rate: ${sampleRate} Hz`;
-
-      } catch (error) {
-        console.error('Synthesis failed:', error);
-        statusEl.className = 'status error';
-        statusEl.textContent = `Synthesis failed: ${error.message}`;
+      // synthesize audio if mbrola is ready
+      if (poeta && poeta.initialized) {
+        try {
+          var pho = poeta.textToPho(text, meter);
+          var pcm = poeta.mbrola.synthesize(pho);
+          lastPcm = pcm;
+          lastSampleRate = poeta.mbrola.getSampleRate();
+          lastWavBlob = createWavBlob(pcm, lastSampleRate);
+          drawWaveform(document.getElementById('waveform'), pcm);
+        } catch (e) {
+          console.warn('Synthesis error:', e.message);
+        }
       }
+
+      // update pho display if visible
+      var phoContainer = document.getElementById('pho-container');
+      if (phoContainer.style.display !== 'none') {
+        try {
+          document.getElementById('pho-output').textContent = poeta ? poeta.textToPho(text, meter) : synthesize(text, meter);
+        } catch (e) {}
+      }
+    }
+
+    // --- Meter ---
+
+    function onPresetChange() {
+      var sel = document.getElementById('meter-preset');
+      document.getElementById('meter').value = sel.value;
+      scheduleUpdate();
+    }
+
+    function onMeterInput() {
+      var val = document.getElementById('meter').value;
+      var sel = document.getElementById('meter-preset');
+      // sync dropdown if it matches a preset
+      var matched = false;
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === val) {
+          sel.selectedIndex = i;
+          matched = true;
+          break;
+        }
+      }
+      if (!matched) sel.selectedIndex = -1;
+      scheduleUpdate();
+    }
+
+    // --- Playback ---
+
+    function playAudio() {
+      if (!lastPcm || !lastSampleRate) return;
+      var audioEl = document.getElementById('audio-player');
+      var url = URL.createObjectURL(lastWavBlob);
+      audioEl.src = url;
+      audioEl.style.display = 'block';
+      audioEl.play();
     }
 
     function downloadWav() {
-      if (!lastWavBlob) {
-        synthesizeAndPlay().then(() => {
-          if (lastWavBlob) {
-            const url = URL.createObjectURL(lastWavBlob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'latin-speech.wav';
-            a.click();
-            URL.revokeObjectURL(url);
-          }
-        });
-        return;
-      }
-
-      const url = URL.createObjectURL(lastWavBlob);
-      const a = document.createElement('a');
+      if (!lastWavBlob) return;
+      var url = URL.createObjectURL(lastWavBlob);
+      var a = document.createElement('a');
       a.href = url;
       a.download = 'latin-speech.wav';
       a.click();
       URL.revokeObjectURL(url);
     }
 
-    function showPho() {
-      const text = document.getElementById('text').value;
-      const meter = getMeter();
-      const container = document.getElementById('pho-container');
-      const output = document.getElementById('pho-output');
-
-      try {
-        const pho = poeta ? poeta.textToPho(text, meter) : synthesize(text, meter);
-        output.textContent = pho;
-        container.style.display = 'block';
-      } catch (error) {
-        output.textContent = `Error: ${error.message}`;
-        container.style.display = 'block';
+    function togglePho() {
+      var c = document.getElementById('pho-container');
+      if (c.style.display === 'none') {
+        c.style.display = 'block';
+        doUpdate();
+      } else {
+        c.style.display = 'none';
       }
     }
 
-    // Support old /synth?text=...&meter=... URLs redirected via hash
+    // --- Examples ---
+
+    function loadExample(name) {
+      var ex = EXAMPLES[name];
+      if (!ex) return;
+      document.getElementById('text').value = ex.text;
+      document.getElementById('meter').value = ex.meter;
+      // sync dropdown
+      var sel = document.getElementById('meter-preset');
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === ex.meter) { sel.selectedIndex = i; break; }
+      }
+      scheduleUpdate();
+    }
+
+    // --- Hash URL support ---
+
     function loadFromHash() {
       var hash = window.location.hash.slice(1);
       if (!hash) return;
@@ -398,26 +404,38 @@ ad mea perpetuum deducite tempora carmen.`,
       var text = params.get('text');
       var meter = params.get('meter');
       if (text) document.getElementById('text').value = text;
-      if (meter) {
-        var meterSelect = document.getElementById('meter');
-        var found = false;
-        for (var i = 0; i < meterSelect.options.length; i++) {
-          if (meterSelect.options[i].value === meter) {
-            meterSelect.value = meter;
-            found = true;
-            break;
-          }
+      if (meter) document.getElementById('meter').value = meter;
+    }
+
+    // --- Init ---
+
+    async function initialize() {
+      var errEl = document.getElementById('error-status');
+      try {
+        if (typeof createMbrolaModule === 'undefined') {
+          throw new Error('MBROLA WASM not loaded. Run mbrola-wasm/build.sh first.');
         }
-        if (!found) {
-          meterSelect.value = 'custom';
-          document.getElementById('custom-meter').value = meter;
-          updateCustomMeterVisibility();
-        }
+        poeta = new PoetaBrowser();
+        await poeta.init({ voiceUrl: 'i', scansionsUrl: 'scansions.json' });
+        document.getElementById('play-btn').disabled = false;
+        document.getElementById('download-btn').disabled = false;
+        doUpdate();
+      } catch (error) {
+        console.error('Init failed:', error);
+        errEl.textContent = 'Initialization failed: ' + error.message;
+        errEl.style.display = 'block';
       }
     }
 
+    // --- Bind events ---
+
+    document.getElementById('text').addEventListener('input', scheduleUpdate);
+    document.getElementById('meter').addEventListener('input', scheduleUpdate);
+    window.addEventListener('resize', resizeCanvas);
+
     window.addEventListener('load', function() {
       loadFromHash();
+      resizeCanvas();
       initialize();
     });
   </script>
