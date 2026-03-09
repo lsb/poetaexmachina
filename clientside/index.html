@@ -84,6 +84,9 @@
     }
     .meter-row select { flex-shrink: 0; }
     .meter-row input[type="text"] { flex: 1; }
+    #scansion-box {
+      position: relative;
+    }
     #scansion-display {
       font-family: verdana, helvetica, arial, sans-serif;
       font-size: 16px;
@@ -91,6 +94,14 @@
       padding: 10px 0;
       min-height: 28px;
       white-space: pre-wrap;
+    }
+    #timing {
+      position: absolute;
+      bottom: 4px;
+      right: 0;
+      font-size: 10px;
+      color: #ccc;
+      font-family: verdana, helvetica, arial, sans-serif;
     }
     #waveform-container {
       margin: 8px 0;
@@ -160,7 +171,10 @@
     <span class="hint" style="font-family: verdana, helvetica, arial, sans-serif;">l=long s=short a=anceps r=resolvable</span>
   </div>
 
-  <div id="scansion-display"></div>
+  <div id="scansion-box">
+    <div id="scansion-display"></div>
+    <div id="timing"></div>
+  </div>
 
   <div id="waveform-container">
     <canvas id="waveform"></canvas>
@@ -290,21 +304,30 @@
     function doUpdate() {
       var text = document.getElementById('text').value;
       var meter = document.getElementById('meter').value;
+      var timingEl = document.getElementById('timing');
       if (!text.trim() || !meter.trim()) {
         document.getElementById('scansion-display').textContent = '';
+        timingEl.textContent = '';
         lastPcm = null;
         drawWaveform(document.getElementById('waveform'), null);
         return;
       }
 
-      // macronized scansion
+      // macronized scansion (timed)
+      var t0 = performance.now();
       document.getElementById('scansion-display').textContent = macronize(text, meter);
+      var t1 = performance.now();
+      var phoMs = (t1 - t0).toFixed(1);
+      var mbrolaMs = '';
 
       // synthesize audio if mbrola is ready
       if (poeta && poeta.initialized) {
         try {
           var pho = poeta.textToPho(text, meter);
+          var t2 = performance.now();
           var pcm = poeta.mbrola.synthesize(pho);
+          var t3 = performance.now();
+          mbrolaMs = (t3 - t2).toFixed(1);
           lastPcm = pcm;
           lastSampleRate = poeta.mbrola.getSampleRate();
           lastWavBlob = createWavBlob(pcm, lastSampleRate);
@@ -313,6 +336,8 @@
           console.warn('Synthesis error:', e.message);
         }
       }
+
+      timingEl.textContent = mbrolaMs ? phoMs + 'ms pho + ' + mbrolaMs + 'ms mbrola' : phoMs + 'ms pho';
 
       // update pho display if visible
       var phoContainer = document.getElementById('pho-container');
