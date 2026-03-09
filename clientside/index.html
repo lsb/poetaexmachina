@@ -85,7 +85,7 @@
     .meter-row select { flex-shrink: 0; }
     .meter-row input[type="text"] { flex: 1; }
     #scansion-display {
-      font-family: 'Times New Roman', 'DejaVu Serif', serif;
+      font-family: verdana, helvetica, arial, sans-serif;
       font-size: 16px;
       line-height: 1.6;
       padding: 10px 0;
@@ -157,7 +157,7 @@
       <option value="alaalaasla">Alcaic</option>
     </select>
     <input type="text" id="meter" value="lrlrlrlrlrla" oninput="onMeterInput()">
-    <span class="hint">l=long s=short a=anceps r=resolvable</span>
+    <span class="hint" style="font-family: verdana, helvetica, arial, sans-serif;">l=long s=short a=anceps r=resolvable</span>
   </div>
 
   <div id="scansion-display"></div>
@@ -168,7 +168,7 @@
 
   <div class="controls">
     <button id="play-btn" onclick="playAudio()" disabled>Play</button>
-    <button id="download-btn" onclick="downloadWav()" disabled>Download WAV</button>
+    <button id="download-btn" onclick="downloadWav()" disabled>Download</button>
     <button onclick="togglePho()">Show .pho</button>
     <audio id="audio-player" controls style="display: none;"></audio>
   </div>
