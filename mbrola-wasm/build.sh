@@ -48,7 +48,7 @@ docker run --rm -v "${PROJECT_ROOT}:/project" -w /project/mbrola-wasm/MBROLA ems
     -s MODULARIZE=1 \
     -s EXPORT_NAME='createMbrolaModule' \
     -s EXPORTED_FUNCTIONS='["_init_MBR","_close_MBR","_reset_MBR","_read_MBR","_write_MBR","_flush_MBR","_getFreq_MBR","_setFreq_MBR","_setNoError_MBR","_setVolumeRatio_MBR","_lastError_MBR","_lastErrorStr_MBR","_resetError_MBR","_getVersion_MBR","_malloc","_free"]' \
-    -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap","FS","stringToUTF8","UTF8ToString","getValue","setValue"]' \
+    -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap","FS","stringToUTF8","UTF8ToString","getValue","setValue","HEAP16"]' \
     -s ALLOW_MEMORY_GROWTH=1 \
     -s INITIAL_MEMORY=16777216 \
     -s FILESYSTEM=1 \

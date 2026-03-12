@@ -130,63 +130,43 @@ class MbrolaWasm {
       throw new Error('MBROLA not initialized. Call init() first.');
     }
 
-    // Reset any previous state/errors
     this._reset_MBR();
     this._resetError_MBR();
 
-    // Ensure phoneme data ends with newline (MBROLA parser requirement)
     let phoData = phoString;
-    if (!phoData.endsWith('\n')) {
-      phoData += '\n';
-    }
-    // Add extra trailing newline to ensure proper parsing
+    if (!phoData.endsWith('\n')) phoData += '\n';
     phoData += '\n';
 
-    // Write the phoneme data
-    const written = this._write_MBR(phoData);
-    if (written === 0) {
-      console.warn('Warning: write_MBR returned 0');
-    }
-
-    // Signal end of input
-    this._flush_MBR();
-
-    // Read all audio samples
-    // We'll read in chunks and concatenate
-    const chunkSize = 8192; // samples per chunk
+    const readChunkSize = 8192;
+    const bufPtr = this.module._malloc(readChunkSize * 2);
     const chunks = [];
     let totalSamples = 0;
 
-    // Allocate buffer for reading (2 bytes per sample for int16)
-    const bufPtr = this.module._malloc(chunkSize * 2);
-
-    while (true) {
-      const samplesRead = this._read_MBR(bufPtr, chunkSize);
-
-      if (samplesRead < 0) {
-        // Error occurred
-        const errorMsg = this._getLastError();
-        this.module._free(bufPtr);
-        throw new Error(`MBROLA synthesis error: ${errorMsg}`);
+    const self = this;
+    function drainOutput() {
+      while (true) {
+        const n = self._read_MBR(bufPtr, readChunkSize);
+        if (n <= 0) break;
+        const heapOffset = bufPtr >> 1;
+        chunks.push(self.module.HEAP16.slice(heapOffset, heapOffset + n));
+        totalSamples += n;
       }
-
-      if (samplesRead === 0) {
-        // No more samples
-        break;
-      }
-
-      // Copy samples from WASM memory to JavaScript
-      const samples = new Int16Array(samplesRead);
-      for (let i = 0; i < samplesRead; i++) {
-        samples[i] = this.module.getValue(bufPtr + i * 2, 'i16');
-      }
-      chunks.push(samples);
-      totalSamples += samplesRead;
     }
+
+    // Write pho in chunks of ~50 lines to avoid MBROLA buffer overflow
+    const lines = phoData.split('\n');
+    const WRITE_CHUNK = 50;
+    for (let i = 0; i < lines.length; i += WRITE_CHUNK) {
+      const chunk = lines.slice(i, i + WRITE_CHUNK).join('\n') + '\n';
+      this._write_MBR(chunk);
+      drainOutput();
+    }
+
+    this._flush_MBR();
+    drainOutput();
 
     this.module._free(bufPtr);
 
-    // Concatenate all chunks into a single array
     const result = new Int16Array(totalSamples);
     let offset = 0;
     for (const chunk of chunks) {
