@@ -270,8 +270,9 @@
 
     function drawWaveform(canvas, pcm) {
       var ctx = canvas.getContext('2d');
-      var w = canvas.width;
-      var h = canvas.height;
+      var dpr = window.devicePixelRatio || 1;
+      var w = canvas.width / dpr;
+      var h = canvas.height / dpr;
       ctx.clearRect(0, 0, w, h);
       if (!pcm || pcm.length === 0) return;
       var step = pcm.length / w;
