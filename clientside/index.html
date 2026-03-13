@@ -81,9 +81,10 @@
       align-items: center;
       gap: 8px;
       margin-bottom: 8px;
+      flex-wrap: wrap;
     }
     .meter-row select { flex-shrink: 0; }
-    .meter-row input[type="text"] { flex: 1; }
+    .meter-row input[type="text"] { flex: 1; min-width: 120px; }
     #scansion-box {
       position: relative;
     }
@@ -169,7 +170,7 @@
       <option value="alaalaasla">Alcaic</option>
     </select>
     <input type="text" id="meter" value="lrlrlrlrlrla" oninput="onMeterInput()">
-    <span class="hint" style="font-family: verdana, helvetica, arial, sans-serif;">l=long s=short a=anceps r=resolvable</span>
+    <span class="hint" style="font-family: verdana, helvetica, arial, sans-serif; margin-left: auto;">l=long s=short a=anceps r=resolvable</span>
   </div>
 
   <div id="scansion-box">
